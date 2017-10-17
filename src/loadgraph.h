@@ -26,6 +26,17 @@ struct Node{
     unsigned int getLastNeighbourPos(){
         return first_neigh_pos+degree;
     }
+
+    friend ostream& operator<<(ostream& out, const Node& node){
+        out << "ID: " << node.ID << "\td: " << node.degree;
+    }
+
+};
+
+struct LessByDegree{
+    bool operator()(const Node* n1, const Node* n2){
+        return n1->degree<n2->degree;
+    }
 };
 
 struct AdjacencyList{
