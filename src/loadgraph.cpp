@@ -5,34 +5,31 @@
 #include "loadgraph.h"
 
 // Calculate the number of nodes and edges
-int graphSize(string filename, unsigned int &num_nodes, unsigned int &num_edges, bool is_weighted, bool debug){
-    if (debug) cout << time(nullptr) << "[Graph graph_size] Begin..." << endl;
+int graphSize(string filename, unsigned int &num_nodes, unsigned int &num_edges, bool debug){
+    if (debug) cout << "[Graph graph_size] Begin..." << endl;
 
     fstream graph;
     num_nodes = 0;
     num_edges = 0;
 
-    if(debug) cout << time(nullptr) <<  "[Graph graph_size] Opening the file..." << endl;
+    if(debug) cout <<  "[Graph graph_size] Opening the file..." << endl;
     graph.open(filename, ios::in);
 
     if (graph.is_open()){
 
-        if(debug) cout << time(nullptr) <<  "[Graph graph_size] Succeed! Counting..." << endl;
+        if(debug)
+            cout <<  "[Graph graph_size] Succeed! Counting..." << endl;
 
-        int node, neighbour, weight;
+        int node, neighbour;
 
         while(!graph.eof()){
             node = 0;
             neighbour = 0;
-            weight = 0;
 
-            if (is_weighted){
-                graph >> node >> neighbour >> weight;
-            }else{
-                graph >> node >> neighbour;
-            }
+            graph >> node >> neighbour;
 
-            if (debug) cout << node << " " << neighbour << " " << weight << endl;
+            if (debug)
+                cout << node << " " << neighbour << endl;
 
             num_edges++;
             if (node > num_nodes){
@@ -43,7 +40,7 @@ int graphSize(string filename, unsigned int &num_nodes, unsigned int &num_edges,
             }
         }
 
-        if(debug) cout << time(nullptr) << "[Graph graph_size] Done!" << endl;
+        if(debug) cout << "[Graph graph_size] Done!" << endl;
         graph.close();
     }else{
         cout << "[Graph graph_size] Error! Unable to open the file " << filename << endl;
@@ -52,157 +49,137 @@ int graphSize(string filename, unsigned int &num_nodes, unsigned int &num_edges,
     return 0;
 }
 
-// Calculate the degree of each node
-// This function build an degree_array in which stores the number of neighbours per node. At index 0 there is the first node (ID=1)
-int computeDegree(string filename, GraphDegree &nodesDegree, bool is_weighted, bool debug){
-    if (debug) cout << time(nullptr) << "[Graph Degree] Begin..." << endl;
 
-    unsigned int num_edges;
-    int node, neighbour, weight;
-    fstream graph;
+void countDegree(fstream& graph, AdjacencyList& adjGraph, bool debug) {
+    unsigned int node,
+            neighbour;
 
-    // Compute the size of the graph
-    if (graphSize(filename, nodesDegree.graph_size, nodesDegree.graph_volume, is_weighted, debug))
-        return -1;
+    while (!graph.eof()) {
+        node = 0;
+        neighbour = 0;
 
-    nodesDegree.degree_array = new int[nodesDegree.graph_size]();
+        graph >> node >> neighbour;
 
-    if (debug) cout << time(nullptr) << "[Graph Degree] Opening the file..." << endl;
-    graph.open(filename, ios::in);
 
-    if (graph.is_open()){
+        if (debug)
+            cout << node << " " << neighbour << endl;
 
-        if(debug) cout << time(nullptr) << "[Graph Degree] Succeed! Counting neigbours..." << endl;
-
-        while(!graph.eof()){
-            node = 0;
-            neighbour = 0;
-
-            if (is_weighted){
-                graph >> node >> neighbour >> weight;
-            }else{
-                graph >> node >> neighbour;
-            }
-
-            // Increase the degree of the node
-            if (node)
-                nodesDegree.degree_array[node-1]++;
-            // Increase the degree of the neighbour
-            if (neighbour)
-                nodesDegree.degree_array[neighbour-1]++;
+        // Increase the degree of the node
+        if (node) {
+            adjGraph.nodes[node].degree++;
+            // Sum the degree of every node
+            adjGraph.cumulative_degree++;
         }
-        /// DEBUG
-        if (debug){
-            cout << time(nullptr) << "[Graph Degree] Finished! Output:" << endl;
-            cout << "  ID\tDegree" << endl;
-            cout << "  ---------------------------" << endl;
-            nodesDegree.print();
+
+        // Increase the degree of the neighbour
+        if (neighbour) {
+            adjGraph.nodes[neighbour].degree++;
+            // Sum the degree of every node
+            adjGraph.cumulative_degree++;
         }
-        graph.close();
-    }else{
-        cout << time(nullptr) << "[Graph Degree] Error! Unable to open the file " << filename << endl;
-        return -1;
+
     }
-    return 0;
+}
+
+void storeNeighbours(fstream& graph, AdjacencyList& adjGraph, bool debug){
+    unsigned int node,
+            neighbour;
+
+    while(!graph.eof()){
+        node = 0;
+        neighbour = 0;
+
+        graph >> node >> neighbour;
+
+        if (debug)
+            cout << node << " " << neighbour << endl;
+
+        if(node) {
+            adjGraph.neighbours_list[adjGraph.nodes[node].first_neigh_pos] = neighbour;
+            adjGraph.nodes[node].first_neigh_pos++;
+        }
+
+        if(neighbour) {
+            adjGraph.neighbours_list[adjGraph.nodes[neighbour].first_neigh_pos] = node;
+            // Increase cursor to write the next neighbour in the correct location
+            adjGraph.nodes[neighbour].first_neigh_pos++;
+        }
+
+
+    }
+
+    // Reset beginning position (going backwards of a nr of steps equal to the degree of the node)
+    for (unsigned int node_idx=1; node_idx <= adjGraph.num_nodes; node_idx++){
+        adjGraph.nodes[node_idx].first_neigh_pos -= adjGraph.nodes[node_idx].degree;
+    }
 }
 
 // Loading the adjacency list & store it in memory
-int loadAdjListContiguous(string filename, AdjacencyList& graphAdj, bool is_weighted, bool debug){
+int loadAdjList(string filename, AdjacencyList& adjGraph, bool debug){
     fstream graph;
-    unsigned int cursor = 0;
+    unsigned int cursor;
 
 
     /// -------- STRUCTURE INIT -----------
-    // Compute the degree of the graph, and link it to the structure, updating size and volume
-    computeDegree(filename, graphAdj.adjNodesDegree, is_weighted, debug);
-    graphAdj.num_vertices = graphAdj.adjNodesDegree.graph_size;
-    graphAdj.num_edges =  graphAdj.adjNodesDegree.graph_volume;
-    graphAdj.is_weighted = is_weighted;
+    // Compute the size of the graph
+    if (graphSize(filename, adjGraph.num_nodes, adjGraph.num_edges, debug))
+        return -1;
 
-    // Sum the degree of every node
-    for (unsigned int i=0; i < graphAdj.num_vertices; i++){
-        graphAdj.size_neighbour_list += graphAdj.adjNodesDegree.degree_array[i];
+    // Allocate array of nodes
+    // ARRAYS STARTS FROM 0, THE INDEX OF ARRAY CORRESPOND TO THE NODE ID  (0 IS AN ERROR VALUE)
+    adjGraph.nodes = new Node[adjGraph.num_nodes+1];
+    // initialize nodes with their id
+    for (unsigned int n=0; n<adjGraph.num_nodes+1; n++){
+        adjGraph.nodes[n].ID = n;
     }
 
-    // update total number of entry in the neighbours list
-    graphAdj.neighbours_list = new unsigned int[graphAdj.size_neighbour_list];   // List of neighbours in a compact way
+    if (debug)
+        cout << "[Adjacency List] Opening the file..." << endl;
 
-    // Contains the index of the neighbours_list where the list of neighbours (of the i node) starts
-    graphAdj.list_beginning = new unsigned int[graphAdj.num_vertices]();
+    graph.open(filename, ios::in);
+    if (graph.is_open()){
+        if (debug) cout << "[Adjacency List] Succeed! Counting neigbours..." << endl;
 
-    // Contains the list of the weight per edge
-    if (is_weighted)
-        graphAdj.weights_list = new unsigned int[graphAdj.size_neighbour_list]();
+        countDegree(graph, adjGraph, debug);
 
-
-    // Initialize list_beginning to point at the beginning of their list
-    for (unsigned int node_idx=0; node_idx < graphAdj.num_vertices; node_idx++){
-        graphAdj.list_beginning[node_idx] = cursor;
-        cursor += graphAdj.adjNodesDegree.degree_array[node_idx];
+        cout << "[Adjacency List] Done! Cumulative Degree: " << adjGraph.cumulative_degree << endl;
+        graph.close();
+    }else{
+        cout << "[Adjacency List] Error! Unable to open the file " << filename << endl;
+        return -1;
     }
 
-    if(debug) cout << time(nullptr) <<  "[Compact Adjacency List] Opening the file..." << endl;
+
+    // update total number of entry in the neighbours list, instantiate neighbour table
+    adjGraph.neighbours_list = new unsigned int[adjGraph.cumulative_degree+1];   // List of neighbours in a way, 0 IS NOT USED
+
+    // Initialize first_neigh_pos to point at the beginning of their list
+    cursor = 1;
+    for (unsigned int node_idx=1; node_idx <=  adjGraph.num_nodes; node_idx++){
+        adjGraph.nodes[node_idx].first_neigh_pos = cursor;
+        // move cursor forward of "node_degree" steps, so that it becomes the new starting position for the next node
+        cursor += adjGraph.nodes[node_idx].degree;
+    }
+
+    if(debug) cout <<  "[Adjacency List] Opening the file..." << endl;
     graph.open(filename, ios::in);
 
     if (graph.is_open()){
-        if(debug) cout << time(nullptr) << "[Compact Adjacency List] Succeed! Building Adjacency List..." << endl;
+        if(debug) cout << "[Adjacency List] Succeed! Building Adjacency List..." << endl;
 
-        unsigned int node,
-                neighbour,
-                weight;
+        storeNeighbours(graph, adjGraph, debug);
 
-        while(!graph.eof()){
-            node = 0;
-            neighbour = 0;
-            weight = 0;
-
-            if (is_weighted){
-                graph >> node >> neighbour >> weight;
-            }else{
-                graph >> node >> neighbour;
-            }
-
-            if(node) {
-                graphAdj.neighbours_list[graphAdj.list_beginning[node - 1]] = neighbour;
-
-                // load weight only if it is weighted
-                if (is_weighted)
-                    graphAdj.weights_list[graphAdj.list_beginning[node - 1]] = weight;
-
-                // Increase cursor to write the next neighbour in the correct location
-                graphAdj.list_beginning[node-1]++;
-
-            }
-
-            if(neighbour) {
-                graphAdj.neighbours_list[graphAdj.list_beginning[neighbour - 1]] = node;
-
-                // load weight only if it is weighted
-                if (is_weighted)
-                    graphAdj.weights_list[graphAdj.list_beginning[neighbour - 1]] = weight;
-
-                // Increase cursor to write the next neighbour in the correct location
-                graphAdj.list_beginning[neighbour-1]++;
-            }
-
-
-        }
-
-        // Reset beginning position (going backwards of a nr of steps equal to the degree of the node)
-        for (unsigned int node_idx=0; node_idx < graphAdj.num_vertices; node_idx++){
-            graphAdj.list_beginning[node_idx] -= graphAdj.adjNodesDegree.degree_array[node_idx];
-        }
-
-        if(debug) cout << time(nullptr) << "[Compact Adjacency List]  Finished! Graph loaded." << endl;
+        if(debug) cout << "[Adjacency List]  Finished! Graph loaded." << endl;
 
         /// DEBUG
         if (debug){
-            cout << time(nullptr) << "[Compact Adjacency List] print Adj List..." << endl;
-            graphAdj.print(debug);
+            cout << "[Adjacency List] print Adj List..." << endl;
+            adjGraph.print(debug);
         }
         graph.close();
+
     }else{
-        cout << "[Compact Adjacency List] Error! Unable to open the file " << filename << endl;
+        cout << "[Adjacency List] Error! Unable to open the file " << filename << endl;
         return -1;
     }
     return 0;

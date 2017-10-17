@@ -8,7 +8,7 @@ int main() {
     AdjacencyList loadedGraph;
 
     string filename = "../graphs/sample.graph";
-    bool debug = false;
+    bool debug = true;
     bool is_weighted = false;
 
     ifstream file(filename);
@@ -16,10 +16,13 @@ int main() {
         cout << "No such file ... " << endl;
 
     cout << "Loading graph ..." << endl;
-    if (loadAdjListContiguous(filename, loadedGraph, is_weighted, debug))
+    if (loadAdjList(filename, loadedGraph, debug))
         return -1;
 
     loadedGraph.print(debug);
+
+
+
 
     return 0;
 }
