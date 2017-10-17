@@ -9,17 +9,16 @@ int main() {
 
     string filename = "../graphs/sample.graph";
     bool debug = false;
-    bool is_weighted = false;
 
     ifstream file(filename);
     if (!file.good())
-        cout << "No such file ... " << endl;
+        cout << "[ERROR] main.cpp: no such file " << filename << endl;
 
-    cout << "Loading graph ..." << endl;
-    if (loadAdjListContiguous(filename, loadedGraph, is_weighted, debug))
+    cout << endl << "main.cpp: loading graph" << endl << endl;
+    if (loadAdjListContiguous(filename, loadedGraph, debug))
         return -1;
 
-    loadedGraph.print(debug);
+    loadedGraph.print();
 
     return 0;
 }
