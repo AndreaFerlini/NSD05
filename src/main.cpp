@@ -1,11 +1,11 @@
 #include <iostream>
 #include <queue>
 
-#include "loadgraph.h"
+#include "AdjacencyList.h"
 
 int main() {
 
-    AdjacencyList loadedGraph;
+    AdjacencyList adjGraph;
 
     string filename = "../graphs/sample.graph";
     bool debug = false;
@@ -15,15 +15,14 @@ int main() {
         cout << "No such file ... " << endl;
 
     cout << "Loading graph ..." << endl;
-    if (loadAdjList(filename, loadedGraph, debug))
+    if (adjGraph.loadFromFile(filename, debug))
         return -1;
 
-    loadedGraph.print(debug);
+    adjGraph.print(debug);
 
-    priority_queue<Node*,vector<Node*>, LessByDegree> minHeap;
-
+/*
     // connect link all the nodes of the graph in the heap
-    for (unsigned int i=1; i<=loadedGraph.num_nodes; i++){
+    for (unsigned int i=1; i<=adjGraph.getNumNodes(); i++){
         minHeap.push(loadedGraph.nodes+i);
     }
 
@@ -36,6 +35,6 @@ int main() {
     cout << endl << "Size of Node*: " << sizeof(Node*);
     cout << endl;
 
-
+*/
     return 0;
 }
