@@ -32,7 +32,7 @@ public:
 
 
 protected:
-    unsigned int* neighbours_list;
+    Node** neighbours_list;
     unsigned int cumulative_degree;
     unsigned int num_edges;
     unsigned int num_nodes;
@@ -42,7 +42,7 @@ private:
     void countDegree(fstream& graph, bool debug);
     int measureGraph(fstream& graph, bool debug);
     void storeNeighbours(fstream& graph, bool debug);
-    unsigned int getNeighbour(unsigned int node_id, unsigned int neighbour_number);
+    Node* getNeighbour(unsigned int node_id, unsigned int neighbour_number);
 
 
 };

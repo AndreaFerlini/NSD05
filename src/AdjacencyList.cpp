@@ -75,7 +75,7 @@ int AdjacencyList::loadFromFile(string filename, bool debug) {
 
     /// --- INITIALIZE NEIGHBOUR LIST ---
     // update total number of entry in the neighbours list, instantiate neighbour table
-    this->neighbours_list = new unsigned int[this->cumulative_degree+1];   // List of neighbours in a way, 0 IS NOT USED
+    this->neighbours_list = new Node*[this->cumulative_degree+1];   // List of neighbours in a way, 0 IS NOT USED
 
     // FOR EACH NODE, Initialize first_neigh_pos to point at the beginning of their list
     cursor = 1;
@@ -130,7 +130,7 @@ void AdjacencyList::print(bool debug) {
     for (unsigned int node_id = 1; node_id <= num_nodes; node_id++) {
         cout << node_id << " -> ";
         for (unsigned int i = 0; i < nodes[node_id].degree; i++) {
-            cout << getNeighbour(node_id,i) << " ";
+            cout << getNeighbour(node_id,i)->ID << " ";
         }
         cout << endl;
 
@@ -195,7 +195,7 @@ int AdjacencyList::measureGraph(fstream &graph, bool debug) {
 
 void AdjacencyList::storeNeighbours(fstream &graph, bool debug) {
         unsigned int node,
-                neighbour;
+                    neighbour;
 
         while(!graph.eof()){
             node = 0;
@@ -207,12 +207,12 @@ void AdjacencyList::storeNeighbours(fstream &graph, bool debug) {
                 cout << node << " " << neighbour << endl;
 
             if(node) {
-                this->neighbours_list[this->nodes[node].first_neigh_pos] = neighbour;
+                this->neighbours_list[this->nodes[node].first_neigh_pos] = &this->nodes[neighbour];
                 this->nodes[node].first_neigh_pos++;
             }
 
             if(neighbour) {
-                this->neighbours_list[this->nodes[neighbour].first_neigh_pos] = node;
+                this->neighbours_list[this->nodes[neighbour].first_neigh_pos] = &this->nodes[node];
                 // Increase cursor to write the next neighbour in the correct location
                 this->nodes[neighbour].first_neigh_pos++;
             }
@@ -226,7 +226,7 @@ void AdjacencyList::storeNeighbours(fstream &graph, bool debug) {
         }
     }
 
-unsigned int AdjacencyList::getNeighbour(unsigned int node_id, unsigned int neighbour_number) {
+Node* AdjacencyList::getNeighbour(unsigned int node_id, unsigned int neighbour_number) {
     if (nodes[node_id].ID == node_id){
         return neighbours_list[nodes[node_id].first_neigh_pos+neighbour_number];
     }
