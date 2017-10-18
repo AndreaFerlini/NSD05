@@ -37,7 +37,6 @@ int graphSize(string filename, AdjacencyList& adjList , bool debug){
     }
     return 0;
 }
-
 // Compute the degree of each node
 int computeDegree(string filename, AdjacencyList& adjList, bool debug){
     unsigned int node, neighbour;
@@ -83,7 +82,6 @@ int computeDegree(string filename, AdjacencyList& adjList, bool debug){
     }
     return 0;
 }
-
 // Compute cumulative degree
 int computeCumulativeDegree(AdjacencyList& adjList, bool debug){
     for (unsigned int i=1; i < adjList.num_nodes+1; i++){
@@ -92,7 +90,6 @@ int computeCumulativeDegree(AdjacencyList& adjList, bool debug){
     if(debug) cout << "[SUCCESS] computeCumulativeDegree()" << endl;
     return 0;
 }
-
 // Compute first_neighbour of each node
 int computeFirstNeighbour(AdjacencyList& adjList, bool debug){
     unsigned int pos=1;
@@ -112,6 +109,7 @@ int computeFirstNeighbour(AdjacencyList& adjList, bool debug){
     return 0;
 }
 
+// Main function of the file
 // Loading the adjacency list & store it in memory
 int loadAdjListContiguous(string filename, AdjacencyList& adjList, bool debug){
     unsigned int node, neighbour;
@@ -133,7 +131,6 @@ int loadAdjListContiguous(string filename, AdjacencyList& adjList, bool debug){
     computeFirstNeighbour(adjList, debug);
 
     if (graph.is_open()){
-
         while(!graph.eof()){
             node = 0;
             neighbour = 0;
