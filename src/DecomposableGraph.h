@@ -9,10 +9,10 @@
 #include "AdjacencyList.h"
 #include <queue>
 
-class custom_priority_queue : public priority_queue<Node*, vector<Node*>, Node>
-{
+template<typename T>
+class min_heap : public priority_queue<T, vector<T>>{
 public:
-    bool remove(Node* value){
+    bool remove(const T& value){
         auto it = find(this->c.begin(), this->c.end(), value);
         if (it != this->c.end()) {
             this->c.erase(it);
@@ -26,19 +26,36 @@ public:
 };
 
 
+class HeapNode{
+public:
+    HeapNode() : g_node(nullptr), dec_degree(0) {}
+    HeapNode(Node* g_node);
+
+    unsigned int getID();
+    uint16_t getC();
+    void setC(uint16_t _c);
+
+    Node* getNeighbour(unsigned int number);
+    bool operator<(const HeapNode& rhs) const;
+    friend ostream& operator<<(ostream& out, const HeapNode& obj);
+
+    Node* g_node;
+    unsigned int dec_degree;
+
+};
+
 // TODO: agree on structure, methods, and everything...
 class DecomposableGraph : public AdjacencyList {
 public:
     DecomposableGraph(string filename, bool debug);
     //~DecomposableGraph();
-
     void flushHeap(bool debug);
+    int decomposeGraph();
 
 private:
-    minHeap nodesHeap;
+    min_heap<HeapNode> minHeap;
 
-    void makeHeap();
-    void decomposeGraph();
+    void initHeap();
 
 };
 

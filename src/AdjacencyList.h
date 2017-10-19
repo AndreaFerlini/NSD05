@@ -37,12 +37,13 @@ protected:
     unsigned int num_edges;
     unsigned int num_nodes;
     Node* nodes;                        // array of the nodes in the greaph (ID, degree, pointer to the beginning of list of neighbours)
+    Node* getNeighbour(unsigned int node_id, unsigned int neighbour_number);
 
 private:
     void countDegree(fstream& graph, bool debug);           // count degree for each node from a graph file stream
     int measureGraph(fstream& graph, bool debug);           // count degree for each node from a graph file stream
     void storeNeighbours(fstream& graph, bool debug);
-    Node* getNeighbour(unsigned int node_id, unsigned int neighbour_number);
+
 
 };
 
