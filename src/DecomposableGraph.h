@@ -8,22 +8,7 @@
 
 #include "AdjacencyList.h"
 #include <queue>
-
-template<typename T>
-class min_heap : public priority_queue<T, vector<T>>{
-public:
-    bool remove(const T& value){
-        auto it = find(this->c.begin(), this->c.end(), value);
-        if (it != this->c.end()) {
-            this->c.erase(it);
-            std::make_heap(this->c.begin(), this->c.end(), this->comp);
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-};
+#include <algorithm>
 
 
 class HeapNode{
@@ -31,29 +16,74 @@ public:
     HeapNode() : g_node(nullptr), dec_degree(0) {}
     HeapNode(Node* g_node);
 
-    unsigned int getID();
+    unsigned int getID() const;
     uint16_t getC();
     void setC(uint16_t _c);
 
     Node* getNeighbour(unsigned int number);
     bool operator<(const HeapNode& rhs) const;
-    friend ostream& operator<<(ostream& out, const HeapNode& obj);
+    bool operator()(const HeapNode& lhs, const HeapNode& rhs);
+    friend ostream& operator<< (ostream& out, const HeapNode& obj);
+    friend bool operator== ( const HeapNode& lhs, const unsigned int &_ID);
 
     Node* g_node;
     unsigned int dec_degree;
 
 };
 
-// TODO: agree on structure, methods, and everything...
+class my_min_heap : public priority_queue<HeapNode, vector<HeapNode>, HeapNode >{
+public:
+
+    void remake(){
+        std::make_heap(this->c.begin(), this->c.end(), this->comp);
+    }
+
+    bool update(const unsigned int ID){
+        auto it = find(this->c.begin(), this->c.end(), ID);
+        if (it != this->c.end()) {
+          //cout << "[my_min_heap::update] current it: " << *it << endl;
+            it->dec_degree--;
+            std::make_heap(this->c.begin(), this->c.end(), this->comp);
+            return true;
+        }
+        else {
+            cout << "[my_min_heap::update] *** END OR NOT FOUND *** " <<  *it << endl;
+            return false;
+        }
+    }
+
+    void print(){
+        for (auto it=this->c.begin(); it!=this->c.end(); it++){
+            cout << *it << endl;
+        }
+        cout << endl;
+    }
+};
+
 class DecomposableGraph : public AdjacencyList {
 public:
     DecomposableGraph(string filename, bool debug);
     //~DecomposableGraph();
     void flushHeap(bool debug);
-    int decomposeGraph();
+    int decomposeGraph(bool debug);
+
+    void update(int i){
+        minHeap.update(i);
+    }
+/*
+    void heapTest(){
+        minHeap.print();
+        minHeap.pop();
+        minHeap.print();
+        update(3);
+        minHeap.print();
+        minHeap.remake();
+        minHeap.print();
+    }*/
 
 private:
-    min_heap<HeapNode> minHeap;
+
+    my_min_heap minHeap;
 
     void initHeap();
 

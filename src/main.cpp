@@ -5,7 +5,7 @@
 
 int main() {
 
-    string filename = "../graphs/sample.graph";
+    string filename = "../graphs/course5.graph";
     bool debug = true;
 
     ifstream file(filename);
@@ -14,9 +14,14 @@ int main() {
 
     DecomposableGraph decGraph(filename, debug);
 
-    decGraph.print(debug);
+    //decGraph.print(debug);
+    //decGraph.heapTest();
 
-    decGraph.flushHeap(debug);
+
+
+
+    decGraph.decomposeGraph(debug);
+
 
     cout << endl << "Size of Node: " << sizeof(Node);
     cout << endl << "Size of Node*: " << sizeof(Node*);

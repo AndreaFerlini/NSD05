@@ -231,7 +231,7 @@ Node* AdjacencyList::getNeighbour(unsigned int node_id, unsigned int neighbour_n
     }
     else{
         cout << "[AdjacencyList] - Error, node list corrupted";
-        return 0;
+        return nullptr;
     }
 
 }
