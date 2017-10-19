@@ -25,14 +25,14 @@ struct Node {
 
     friend ostream& operator<< (ostream &out, const Node& n){
         if (n.id)
-            out << n.id << " has degree: " << n.degree << endl;
+            out << "node " << n.id << " with degree: " << n.degree << endl;
         else
             out << "node with degree 0" << endl;
         return out;
     }
 
     bool operator() (const Node* n1, const Node *n2){
-        return n1->degree < n2->degree;
+        return n1->degree > n2->degree;
     }
 };
 

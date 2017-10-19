@@ -182,5 +182,6 @@ int loadAdjListContiguous(string filename, AdjacencyList& adjList, bool debug){
         cout << "[ERROR] loadAdjListContiguous(): unable to open the file " << filename << endl;
         return -1;
     }
+
     return 0;
 }
