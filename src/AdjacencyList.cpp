@@ -12,9 +12,8 @@ AdjacencyList::AdjacencyList(){
     num_edges = 0;
 }
 
-AdjacencyList::AdjacencyList(string filename) {
-    AdjacencyList();
-    this->loadFromFile(filename, false);
+AdjacencyList::AdjacencyList(string filename, bool debug):AdjacencyList() {
+    this->loadFromFile(filename, debug);
 }
 
 AdjacencyList::~AdjacencyList() {
@@ -227,7 +226,7 @@ void AdjacencyList::storeNeighbours(fstream &graph, bool debug) {
     }
 
 Node* AdjacencyList::getNeighbour(unsigned int node_id, unsigned int neighbour_number) {
-    if (nodes[node_id].ID == node_id){
+    if (this->nodes[node_id].ID == node_id && neighbour_number<=this->nodes[node_id].degree){
         return neighbours_list[nodes[node_id].first_neigh_pos+neighbour_number];
     }
     else{
@@ -235,21 +234,4 @@ Node* AdjacencyList::getNeighbour(unsigned int node_id, unsigned int neighbour_n
         return 0;
     }
 
-}
-
-
-
-// Loading the adjacency list & store it in memory
-int loadAdjList(string filename, AdjacencyList& adjGraph, bool debug){
-
-
-
-
-
-
-
-
-
-
-    return 0;
 }

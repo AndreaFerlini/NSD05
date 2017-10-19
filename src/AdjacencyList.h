@@ -17,7 +17,7 @@ public:
     AdjacencyList();
 
     /// SPECIFIC CONSTRUCTOR (directly load graph)
-    AdjacencyList(string filename);
+    AdjacencyList(string filename, bool debug);
 
     /// DESTRUCTOR
     ~AdjacencyList();
@@ -32,18 +32,17 @@ public:
 
 
 protected:
-    Node** neighbours_list;
-    unsigned int cumulative_degree;
+    Node** neighbours_list;             // array of Node pointers to store contiguously all the neignbours
+    unsigned int cumulative_degree;     // sum of all degree of the nodes (probabily edge x2). SIZE OF neighbour_list
     unsigned int num_edges;
     unsigned int num_nodes;
-    Node* nodes;
+    Node* nodes;                        // array of the nodes in the greaph (ID, degree, pointer to the beginning of list of neighbours)
 
 private:
-    void countDegree(fstream& graph, bool debug);
-    int measureGraph(fstream& graph, bool debug);
+    void countDegree(fstream& graph, bool debug);           // count degree for each node from a graph file stream
+    int measureGraph(fstream& graph, bool debug);           // count degree for each node from a graph file stream
     void storeNeighbours(fstream& graph, bool debug);
     Node* getNeighbour(unsigned int node_id, unsigned int neighbour_number);
-
 
 };
 

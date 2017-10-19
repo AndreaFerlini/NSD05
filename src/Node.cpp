@@ -3,7 +3,7 @@
 //
 
 #include "Node.h"
-
+/*
 Node::Node(){
     ID =0;
     degree=0;
@@ -14,6 +14,7 @@ unsigned int Node::getLastNeighbourPos(){
     return first_neigh_pos+degree;
 }
 
-ostream& Node::operator<<(ostream &out) const{
-    out << "ID: " << this->ID << "\td: " << this->degree;
+ostream& operator<<(ostream& out, const Node& _node_ptr){
+    out << "ID: " << _node_ptr.ID << "\td: " << _node_ptr.degree;
 }
+*/
