@@ -14,7 +14,6 @@ public:
     unsigned int ID;
     unsigned int degree;
     unsigned int first_neigh_pos;
-    uint16_t c;
 
     Node();
 

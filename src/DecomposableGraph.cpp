@@ -26,22 +26,15 @@ unsigned int HeapNode::getID()const {
     return g_node->ID;
 }
 
-uint16_t HeapNode::getC() {
-    return g_node->c;
-}
-
-void HeapNode::setC(uint16_t _c) {
-    g_node->c = _c;
-}
-
-
 bool operator==(const HeapNode &lhs, const unsigned int &_ID) {
     return lhs.getID()==_ID;
 }
 
 DecomposableGraph::DecomposableGraph(string filename, bool debug): AdjacencyList(filename, debug) {
     this->initHeap();
-    cout << "[DecomposableGraph] Graph loaded and heap successfully created!" << endl;
+    this->c = new unsigned int [this->num_nodes+1]();
+    cout << "[SUCCESS] - DecomposableGraph(): graph loaded and heap successfully created" << endl;
+
 }
 
 void DecomposableGraph::initHeap() {
@@ -56,13 +49,13 @@ void DecomposableGraph::flushHeap(bool debug) {
         if (debug) cout << this->minHeap.top() << endl;
         this->minHeap.pop();
     }
-    cout << "heap empty" << endl;
+    cout << "[SUCCESS] - flushHeap(): the heap is empty" << endl;
 }
 
 
 int DecomposableGraph::decomposeGraph(bool debug) {
 
-    uint16_t c;
+    unsigned int c;
     HeapNode v;
     bool* removed = nullptr;
 //    unsigned int *rank = nullptr;
@@ -71,27 +64,22 @@ int DecomposableGraph::decomposeGraph(bool debug) {
     //init array to track the removed nodes
     removed = new bool [num_nodes+1]();
 
-    if (debug) cout << "[DecomposableGraph::decomposeGraph] start decomposition..." << endl;
+    if (debug) cout << "[DEBUG] - DecomposableGraph::decomposeGraph(): starting the decomposition" << endl;
 
     c = 0;
     while (!minHeap.empty()){
-
-        // cout << endl << "***MINHEAP TOP = " << minHeap.top() << endl;
-
         // extract minimum remaining degree node in heap
         v=minHeap.top();
         minHeap.pop();
         // update the removed array
         removed[v.getID()] = true;
 
-        // if (debug) cout << "***MINHEAP TOP (after pop) = " << minHeap.top() << endl;
-
         // update c value in the corresponding node in adjList
         if ( v.dec_degree > c) {
             c = v.dec_degree;
         }
 
-        v.setC(c);
+        this->c[v.getID()] = c;
 
         //update the degrees of the other nodes
             //loop on the nodes, check if v is in nodes[i]'s neigh list
@@ -111,7 +99,7 @@ int DecomposableGraph::decomposeGraph(bool debug) {
             }
         }
 
-        cout << "[DecomposableGraph::decomposeGraph]  Node: " << v.getID() << " c: " << v.getC() << endl;
+        cout << "[EXECUTION] - DecomposableGraph::decomposeGraph():  Node: " << v.getID() << " c: " << this->c[v.getID()] << endl;
 
     }
 

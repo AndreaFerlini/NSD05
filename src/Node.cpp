@@ -8,7 +8,6 @@ Node::Node(){
     ID =0;
     degree=0;
     first_neigh_pos=0;
-    c=0;
 }
 
 unsigned int Node::getLastNeighbourPos(){
@@ -20,6 +19,6 @@ bool Node::operator()(const Node& lhs, const Node& rhs) const {
 }
 
 ostream& operator<<(ostream& out, const Node& obj){
-    out << "ID:" << obj.ID << "  d:" << obj.degree << "  c:" << obj.c;
+    out << "ID:" << obj.ID << "  d:" << obj.degree;
 }
 

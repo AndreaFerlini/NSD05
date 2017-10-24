@@ -5,7 +5,7 @@
 
 int main() {
 
-    string filename = "../graphs/course5.graph";
+    string filename = "../graphs/sample.graph";
     bool debug = true;
 
     ifstream file(filename);

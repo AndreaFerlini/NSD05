@@ -29,22 +29,22 @@ int AdjacencyList::loadFromFile(string filename, bool debug) {
     fstream graph;
     unsigned int cursor;
 
-    if (debug) cout << "[loadFromFile] Begin..." << endl;
+    if (debug) cout << "[DEBUG] - AdjacencyList::loadFromFile(): starting the function..." << endl;
 
     if (debug)
-        cout << "[loadFromFile] Opening the file..." << endl;
+        cout << "[DEBUG] - AdjacencyList::loadFromFile(): opening the file..." << endl;
 
     graph.open(filename, ios::in);
 
     // --- MEASURE SIZE AND VOLUME ---
     if (graph.is_open()) {
-        if(debug) cout <<  "[loadFromFile] Succeed! Measuring size and volume..." << endl;
+        if(debug) cout <<  "[DEBUG] - AdjacencyList::loadFromFile(): graph opening succeed! measuring size and volume..." << endl;
         measureGraph(graph, debug);
-        if(debug) cout << "[loadFromFile] Done!" << endl;
+        if(debug) cout << "[DEBUG] - AdjacencyList::loadFromFile(): done" << endl;
         graph.close();
 
     } else {
-        cout << "[loadFromFile] Error! Unable to open the file " << filename << endl;
+        cout << "[ERROR] - AdjacencyList::loadFromFile(): unable to open the file " << filename << endl;
         return -1;
     }
 
@@ -59,16 +59,16 @@ int AdjacencyList::loadFromFile(string filename, bool debug) {
 
     /// --- COUNTING NEIGHBOURS ---
     if (debug)
-        cout << "[loadFromFile] Opening the file..." << endl;
+        cout << "[DEBUG] - AdjacencyList::loadFromFile(): graph opening succeed! opening the file..." << endl;
 
     graph.open(filename, ios::in);
     if (graph.is_open()){
-        if (debug) cout << "[loadFromFile] Succeed! Counting neigbours..." << endl;
+        if (debug) cout << "[DEBUG] - AdjacencyList::loadFromFile(): succeed! counting neighbours..." << endl;
         countDegree(graph, debug);
-        if (debug) cout << "[loadFromFile] Done! Cumulative Degree: " << this->cumulative_degree << endl;
+        if (debug) cout << "[DEBUG] - AdjacencyList::loadFromFile(): done! cumulative degree: " << this->cumulative_degree << endl;
         graph.close();
     }else{
-        cout << "[loadFromFile] Error! Unable to open the file " << filename << endl;
+        cout << "[ERROR] - AdjacencyList::loadFromFile(): unable to open the file " << filename << endl;
         return -1;
     }
 
@@ -85,23 +85,24 @@ int AdjacencyList::loadFromFile(string filename, bool debug) {
     }
 
     /// --- READ NODES AND FILL THE NEIGHBOUR LIST ---
-    if(debug) cout <<  "[loadFromFile] Opening the file..." << endl;
+    if(debug) cout <<  "[DEBUG] - AdjacencyList::loadFromFile(): opening the file..." << endl;
     graph.open(filename, ios::in);
 
     if (graph.is_open()){
-        if(debug) cout << "[loadFromFile] Succeed! Building Adjacency List..." << endl;
+        if(debug) cout << "[DEBUG] - AdjacencyList::loadFromFile(): succeed! building adjacency list..." << endl;
         storeNeighbours(graph, debug);
-        if(debug) cout << "[loadFromFile]  Finished! Graph loaded." << endl;
+        if(debug) cout << "[DEBUG] - AdjacencyList::loadFromFile(): done, graph loaded" << endl;
 
         /// DEBUG
         if (debug){
-            cout << "[loadFromFile] print Adj List..." << endl;
+            cout << "[DEBUG] - AdjacencyList::loadFromFile(): printing the adjacency list..." << endl;
             this->print(debug);
+            cout << "[DEBUG] - AdjacencyList::loadFromFile(): adjacency list printed" << endl;
         }
         graph.close();
 
     }else{
-        cout << "[loadFromFile] Error! Unable to open the file " << filename << endl;
+        cout << "[ERROR] - AdjacencyList::loadFromFile(): unable to open the file " << filename << endl;
         return -1;
     }
 
@@ -118,7 +119,7 @@ unsigned int AdjacencyList::getNumEdges() {
 void AdjacencyList::print(bool debug) {
 
     if (debug){
-        cout << "[myAdj.print]" << endl;
+        cout << "[DEBUG] - AdjacencyList::print():" << endl;
         cout << "cumulative_degree: " << cumulative_degree << endl;
         cout << "num_nodes:         " << num_nodes << endl;
         cout << "num_edges:          " << num_edges << endl;
@@ -230,7 +231,7 @@ Node* AdjacencyList::getNeighbour(unsigned int node_id, unsigned int neighbour_n
         return neighbours_list[nodes[node_id].first_neigh_pos+neighbour_number];
     }
     else{
-        cout << "[AdjacencyList] - Error, node list corrupted";
+        cout << "[ERROR] - AdjacencyList::getNeighbour(): node list corrupted";
         return nullptr;
     }
 

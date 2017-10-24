@@ -17,10 +17,7 @@ public:
     HeapNode(Node* g_node);
 
     unsigned int getID() const;
-    uint16_t getC();
-    void setC(uint16_t _c);
 
-    Node* getNeighbour(unsigned int number);
     bool operator<(const HeapNode& rhs) const;
     bool operator()(const HeapNode& lhs, const HeapNode& rhs);
     friend ostream& operator<< (ostream& out, const HeapNode& obj);
@@ -41,9 +38,9 @@ public:
     bool update(const unsigned int ID){
         auto it = find(this->c.begin(), this->c.end(), ID);
         if (it != this->c.end()) {
-          //cout << "[my_min_heap::update] current it: " << *it << endl;
+            //cout << "[my_min_heap::update] current it: " << *it << endl;
             it->dec_degree--;
-            std::make_heap(this->c.begin(), this->c.end(), this->comp);
+            this->remake();
             return true;
         }
         else {
@@ -67,11 +64,13 @@ public:
     void flushHeap(bool debug);
     int decomposeGraph(bool debug);
 
+    unsigned int *c;
+
     void update(int i){
         minHeap.update(i);
     }
-/*
-    void heapTest(){
+
+    /*    void heapTest(){
         minHeap.print();
         minHeap.pop();
         minHeap.print();
