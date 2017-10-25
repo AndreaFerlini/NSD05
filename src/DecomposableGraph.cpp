@@ -178,10 +178,7 @@ int DecomposableGraph::findDensestPrefix() {
         }
 
     }
-
-
-
-
+    
     delete [] left_nodes;
 
     return 0;

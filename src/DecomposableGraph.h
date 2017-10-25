@@ -57,8 +57,35 @@ public:
     }
 };
 
+class Subgraph {
+public:
+
+    Subgraph(): avg_deg_dens(), edge_density(), size() {};
+
+    //no need for overriding operator <<
+    /*friend ostream& operator<< (ostream& out, const Subgraph& obj){
+        out << "avg degree density: " << obj.avg_deg_dens << endl
+            << "edge density:       " << obj.edge_density << endl
+            << "size:               " << obj.size << endl
+            << "nodes accounted: ";
+    }*/
+
+    void print(){
+        cout << endl;
+        cout << "avg degree density: " << this->avg_deg_dens<< endl
+             << "edge density:       " << this->edge_density << endl
+             << "size:               " << this->size << endl;
+    }
+
+    float avg_deg_dens;
+    float edge_density;
+    unsigned int size;
+};
+
 class DecomposableGraph : public AdjacencyList {
 public:
+    Subgraph densest_prefix;
+
     DecomposableGraph(string filename, bool debug);
     ~DecomposableGraph();
     void flushHeap(bool debug);
@@ -80,34 +107,10 @@ public:
         minHeap.print();
     }*/
 
-
     int findDensestPrefix();
 
-    class Subgraph {
-    public:
-
-        Subgraph(): avg_deg_dens(), edge_density(), size() {};
-
-        friend ostream& operator<< (ostream& out, const Subgraph& obj){
-            out << "avg degree density: " << obj.avg_deg_dens << endl
-                << "edge density:       " << obj.edge_density << endl
-                << "size:               " << obj.size << endl
-                << "nodes accounted: ";
-        }
-
-        void print(){
-            cout << *this;
-        }
-
-        float avg_deg_dens;
-        float edge_density;
-        unsigned int size;
-    };
-
-    Subgraph densest_prefix;
-
     void print_prefix(unsigned int p){
-        cout << "prefix: ";
+        cout << "prefix:             ";
         for (unsigned int n=1; n<=p; n++){
             cout << ordered_n[n]->ID << ", ";
         }
