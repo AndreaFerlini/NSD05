@@ -91,23 +91,11 @@ public:
     void flushHeap(bool debug);
     int decomposeGraph(bool debug);
 
-
-
     void update(int i){
         minHeap.update(i);
     }
 
-    /*    void heapTest(){
-        minHeap.print();
-        minHeap.pop();
-        minHeap.print();
-        update(3);
-        minHeap.print();
-        minHeap.remake();
-        minHeap.print();
-    }*/
-
-    int findDensestPrefix();
+    int findDensestPrefix(bool debug);
 
     void print_prefix(unsigned int p){
         cout << "prefix:             ";
@@ -119,6 +107,7 @@ public:
 
 private:
 
+    bool decomposed;
     my_min_heap minHeap;
     unsigned int *c;
     Node **ordered_n;

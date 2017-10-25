@@ -30,7 +30,7 @@ bool operator==(const HeapNode &lhs, const unsigned int &_ID) {
     return lhs.getID()==_ID;
 }
 
-DecomposableGraph::DecomposableGraph(string filename, bool debug): AdjacencyList(filename, debug), densest_prefix() {
+DecomposableGraph::DecomposableGraph(string filename, bool debug): AdjacencyList(filename, debug), densest_prefix(), decomposed(false) {
     this->initHeap();
     this->c = new unsigned int [this->num_nodes+1]();
     this->ordered_n = new Node*[this->num_nodes+1]();
@@ -128,11 +128,16 @@ int DecomposableGraph::decomposeGraph(bool debug) {
 
     //if (debug) cout << "[DecomposableGraph::decomposeGraph] minHeap top: " << minHeap.top() << endl;
 
+    decomposed = true;
+
     return 0;
 
 }
 
-int DecomposableGraph::findDensestPrefix() {
+int DecomposableGraph::findDensestPrefix(bool debug) {
+    if (!decomposed)
+        this->decomposeGraph(debug);
+
 
     float new_density;
     unsigned int added_node;
