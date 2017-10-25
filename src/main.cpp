@@ -18,14 +18,17 @@ int main() {
     //decGraph.heapTest();
 
 
-
-
     decGraph.decomposeGraph(debug);
 
+    decGraph.findDensestPrefix();
+    decGraph.densest_prefix.print();
+    decGraph.print_prefix(decGraph.densest_prefix.size);
 
     cout << endl << "Size of Node: " << sizeof(Node);
     cout << endl << "Size of Node*: " << sizeof(Node*);
     cout << endl << "Size of unsigned int: " << sizeof(unsigned int);
+    cout << endl << "Size of float: " << sizeof(float);
+
     cout << endl;
 
     return 0;

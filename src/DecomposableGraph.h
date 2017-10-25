@@ -60,11 +60,11 @@ public:
 class DecomposableGraph : public AdjacencyList {
 public:
     DecomposableGraph(string filename, bool debug);
-    //~DecomposableGraph();
+    ~DecomposableGraph();
     void flushHeap(bool debug);
     int decomposeGraph(bool debug);
 
-    unsigned int *c;
+
 
     void update(int i){
         minHeap.update(i);
@@ -80,9 +80,45 @@ public:
         minHeap.print();
     }*/
 
+
+    int findDensestPrefix();
+
+    class Subgraph {
+    public:
+
+        Subgraph(): avg_deg_dens(), edge_density(), size() {};
+
+        friend ostream& operator<< (ostream& out, const Subgraph& obj){
+            out << "avg degree density: " << obj.avg_deg_dens << endl
+                << "edge density:       " << obj.edge_density << endl
+                << "size:               " << obj.size << endl
+                << "nodes accounted: ";
+        }
+
+        void print(){
+            cout << *this;
+        }
+
+        float avg_deg_dens;
+        float edge_density;
+        unsigned int size;
+    };
+
+    Subgraph densest_prefix;
+
+    void print_prefix(unsigned int p){
+        cout << "prefix: ";
+        for (unsigned int n=1; n<=p; n++){
+            cout << ordered_n[n]->ID << ", ";
+        }
+    }
+
+
 private:
 
     my_min_heap minHeap;
+    unsigned int *c;
+    Node **ordered_n;
 
     void initHeap();
 

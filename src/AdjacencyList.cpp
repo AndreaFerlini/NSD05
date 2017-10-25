@@ -227,7 +227,7 @@ void AdjacencyList::storeNeighbours(fstream &graph, bool debug) {
     }
 
 Node* AdjacencyList::getNeighbour(unsigned int node_id, unsigned int neighbour_number) {
-    if (this->nodes[node_id].ID == node_id && neighbour_number<=this->nodes[node_id].degree){
+    if (this->nodes[node_id].ID == node_id && neighbour_number<this->nodes[node_id].degree){
         return neighbours_list[nodes[node_id].first_neigh_pos+neighbour_number];
     }
     else{

@@ -43,8 +43,6 @@ private:
     void countDegree(fstream& graph, bool debug);           // count degree for each node from a graph file stream
     int measureGraph(fstream& graph, bool debug);           // count degree for each node from a graph file stream
     void storeNeighbours(fstream& graph, bool debug);
-
-
 };
 
 /// FUNCTIONS
