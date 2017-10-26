@@ -5,7 +5,8 @@
 
 int main() {
 
-    string filename = "../graphs/com-youtube.ungraph.graph";
+
+    string filename = "../graphs/course5.graph";
     bool debug = false;
 
     ifstream file(filename);
@@ -17,20 +18,27 @@ int main() {
     cout << "[EXECUTION] - main(): loading decomposable graph..." << endl;
     DecomposableGraph decGraph(filename, debug);
     cout << "[EXECUTION] - main(): done! decomposing graph..." << endl;
-    //decGraph.print(debug);
-    //decGraph.heapTest();
+
+//    decGraph.print(debug);
+//    decGraph.heapTest();
+//    decGraph.flushHeap(true);
+
 
     decGraph.decomposeGraph(debug);
 
-    cout << "[EXECUTION] - main(): done! finding densest prefix..." << endl;
+    cout << endl << "[EXECUTION] - main(): done! finding densest prefix..." << endl;
     decGraph.findDensestPrefix(debug);
     cout << "[EXECUTION] - main(): done! output:" << endl;
     decGraph.densest_prefix.print();
     decGraph.print_prefix(decGraph.densest_prefix.size);
+
     cout << endl;
 
-    cout << "[EXECUTION] - main(): done! writing file to plot..." << endl;
-    decGraph.writeCorenessDegreeFile("../plots/sample.out", debug);
+   cout << "[EXECUTION] - main(): done! writing file to plot..." << endl;
+   decGraph.writeCorenessDegreeFile("../plots/sample.out", debug);
+
+
+
 
 /*
     cout << endl << endl << "Size of Node: " << sizeof(Node);

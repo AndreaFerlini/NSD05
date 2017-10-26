@@ -36,18 +36,22 @@ public:
         std::make_heap(this->c.begin(), this->c.end(), this->comp);
     }
 
-    bool update(const unsigned int ID){
+    void update(const unsigned int ID){
         auto it = find(this->c.begin(), this->c.end(), ID);
         if (it != this->c.end()) {
-            //cout << "[my_min_heap::update] current it: " << *it << endl;
+            //cout << "[my_min_heap::update] current it: " << *it << "->" << it->dec_degree-1<< endl;
             it->dec_degree--;
-            this->remake();
-            return true;
+            return;
         }
         else {
-            cout << "[my_min_heap::update] *** END OR NOT FOUND *** " <<  *it << endl;
-            return false;
+            cout << "[ERROR] - my_min_heap::update(): end of heap or node not found" <<  *it << endl;
+            return;
         }
+    }
+
+    void clear_top(){
+        if (this->c.begin()!=this->c.end())
+            this->c.erase(this->c.begin());
     }
 
     void print(){
@@ -62,14 +66,6 @@ class Subgraph {
 public:
 
     Subgraph(): avg_deg_dens(), edge_density(), size() {};
-
-    //no need for overriding operator <<
-    /*friend ostream& operator<< (ostream& out, const Subgraph& obj){
-        out << "avg degree density: " << obj.avg_deg_dens << endl
-            << "edge density:       " << obj.edge_density << endl
-            << "size:               " << obj.size << endl
-            << "nodes accounted: ";
-    }*/
 
     void print(){
         cout << endl;
@@ -95,6 +91,33 @@ public:
     void update(int i){
         minHeap.update(i);
     }
+
+    void heapTest(){
+        minHeap.print();
+        update(1);
+        minHeap.clear_top();
+        minHeap.clear_top();
+        cout << "update(1);" << endl;
+        cout << "minHeap.clear_top();" << endl;
+        cout << "minHeap.clear_top();" << endl;
+        minHeap.print();
+        minHeap.remake();
+        cout << "minHeap.remake();" << endl;
+        minHeap.print();
+        update(3);
+        update(3);
+        update(2);
+        update(6);
+        cout << "update(3);" << endl;
+        cout << "update(3);" << endl;
+        cout << "update(2);" << endl;
+        cout << "update(6);" << endl;
+        minHeap.print();
+        minHeap.remake();
+        cout << "minHeap.remake();" << endl;
+        minHeap.print();
+    }
+
 
     int findDensestPrefix(bool debug);
 

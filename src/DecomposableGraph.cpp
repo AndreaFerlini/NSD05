@@ -64,6 +64,7 @@ void DecomposableGraph::flushHeap(bool debug) {
 int DecomposableGraph::decomposeGraph(bool debug) {
 
     float perc;
+    unsigned resolution;
     const unsigned start = time(NULL);
 
     unsigned int c;
@@ -85,8 +86,13 @@ int DecomposableGraph::decomposeGraph(bool debug) {
         // extract minimum remaining degree node in heap
         v=minHeap.top();
 
+        // REMOVE v from heap but NOT remake yet!!!
+        minHeap.clear_top();
+/*
         // REMOVE v
         minHeap.pop();
+*/
+
         // update the removed array
         removed[v.getID()] = true;
 
@@ -105,26 +111,30 @@ int DecomposableGraph::decomposeGraph(bool debug) {
             //if so, decrease its degree value in the heap
         for (unsigned int i = 0; i<v.g_node->degree; i++){
             Node* n = this->getNeighbour(v.getID(), i);
-
-            // cout << "[DecomposableGraph::decomposeGraph] Neighbour #" << i << " of " << v.getID()
-            // << " is " << *n << " removed:" << removed[n->ID] << endl;
+            if (debug)
+                cout << "[DEBUG] - DecomposableGraph::decomposeGraph(): neighbour #" << i << " of " << v.getID()
+                 << " is " << *n << " removed:" << removed[n->ID] << endl;
 
             if (n== nullptr){
-                // cout << "[DecomposableGraph::decomposeGraph] Neighbour not found... Aborting...";
+                cout << "[ERROR] - DecomposableGraph::decomposeGraph(): neighbour not found... Aborting...";
                 return -1;
             }
 
             if (!removed[n->ID]){       // if the n-th neighbur of v is not removed update it in the heap
-                minHeap.update(n->ID);
+                minHeap.update(n->ID);      // update but NOT remake yet!!!
             }
         }
+
+        // finally remake!!!!!
+        minHeap.remake();
         if (debug)
             cout << "[DEBUG] - DecomposableGraph::decomposeGraph():  Node: " << v.getID()
                  << " c: " << this->c[v.getID()] << " prefix: " << prefix_counter << endl;
 
+        resolution = 1;
         perc = (float)100*prefix_counter/num_nodes;
-        if (((int)(100*perc))%100==0) {
-            printf("%.4f%% - elapsed: %d pref: %d\n", perc, time(NULL)-start, prefix_counter);
+        if (((int)(resolution*perc))%resolution==0) {
+            printf("%.4f%% - elapsed: %d heap_size: %d\n", perc, time(NULL)-start, minHeap.size());
         }
 
         prefix_counter--;
@@ -132,7 +142,7 @@ int DecomposableGraph::decomposeGraph(bool debug) {
     cout << endl;
 
 
-    //if (debug) cout << "[DecomposableGraph::decomposeGraph] minHeap top: " << minHeap.top() << endl;
+    if (debug) cout << "[DecomposableGraph::decomposeGraph] minHeap top: " << minHeap.top() << endl;
 
     decomposed = true;
 
@@ -161,25 +171,29 @@ int DecomposableGraph::findDensestPrefix(bool debug) {
     for (n_h=2; n_h<num_nodes; n_h++){
         added_node = ordered_n[n_h]->ID;
         left_nodes[added_node] = true;
-
-        cout << "[DEBUG] - DecomposableGraph::findDensestPrefix(): prefix length: " << n_h
+        if (debug)
+            cout << "[DEBUG] - DecomposableGraph::findDensestPrefix(): prefix length: " << n_h
              << " node to add: " << added_node << endl;
 
         // cycle over all the neighbour of the current nodes and increment m_h for each neighbour in the prefix
         for (unsigned int neigh = 0; neigh<nodes[added_node].degree; neigh++){
             neigh_ID = getNeighbour(added_node, neigh)->ID;
-            cout << "[DEBUG] - DecomposableGraph::findDensestPrefix(): looking for neighbour: " << neigh_ID << "... ";
+            if (debug)
+                cout << "[DEBUG] - DecomposableGraph::findDensestPrefix(): looking for neighbour: " << neigh_ID << "... ";
             if (left_nodes[neigh_ID]){
                 m_h++;
-                cout << "found, m_h++ = " << m_h << endl;
+                if (debug)
+                    cout << "found, m_h++ = " << m_h << endl;
             } else {
-                cout << "not in prefix, skip" << endl;
+                if (debug)
+                    cout << "not in prefix, skip" << endl;
             }
 
         }
 
         new_density = (float)m_h/n_h;
-        cout << "[DEBUG] - DecomposableGraph::findDensestPrefix(): new density: " << new_density << endl;
+        if (debug)
+            cout << "[DEBUG] - DecomposableGraph::findDensestPrefix(): new density: " << new_density << endl;
 
 
         if (new_density >= densest_prefix.avg_deg_dens){
@@ -203,12 +217,13 @@ int DecomposableGraph::writeCorenessDegreeFile(const string filename, const bool
     unsigned int* occurrencies = nullptr;
     unsigned int occ_size;
     unsigned int temp_c;
-
-    cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): opening file..." << endl;
+    if (debug)
+        cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): opening file..." << endl;
     ofile.open(filename, ios::out);
 
     if (ofile.is_open()){
-        cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): Succeed, processing... " << endl;
+        if (debug)
+            cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): Succeed, processing... " << endl;
 
 
         p=1;
@@ -221,19 +236,23 @@ int DecomposableGraph::writeCorenessDegreeFile(const string filename, const bool
                 delete [] occurrencies;
 
             occurrencies = new unsigned int[occ_size]();
-            cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): parsing " << coreness << "-core..." << endl;
+            if (debug)
+                cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): parsing " << coreness << "-core..." << endl;
 
             while (temp_c == coreness ){
-                cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): node: " << ordered_n[p]->ID
+                if (debug)
+                    cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): node: " << ordered_n[p]->ID
                      << " d:" << ordered_n[p]->degree << endl;
                 if (ordered_n[p]->degree<coreness){
-                    cout <<  "[ERROR] - DecomposableGraph::writeCorenessDegreeFile(): node with degree ("
+                    if (debug)
+                        cout <<  "[ERROR] - DecomposableGraph::writeCorenessDegreeFile(): node with degree ("
                          << ordered_n[p]->degree << ") higher than core value (" << coreness << ")" << endl;
                     return -1;
                 }
 
                 if (1+ordered_n[p]->degree-coreness > occ_size){        // if no space, realloc
-                    cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): realloc occurrencies "
+                    if (debug)
+                        cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): realloc occurrencies "
                          << occ_size << "->" << 1+ordered_n[p]->degree-coreness << endl;
                     unsigned int* temp = new unsigned int[1 + ordered_n[p]->degree-coreness]();
                     std::copy(occurrencies, occurrencies + occ_size, temp);
@@ -250,18 +269,21 @@ int DecomposableGraph::writeCorenessDegreeFile(const string filename, const bool
                 }
 
             }
-            cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): writing [d c o], occ_size: " << occ_size << endl;
+            if (debug)
+                cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): writing [d c o], occ_size: " << occ_size << endl;
 
             for (unsigned int d=0; d<occ_size; d++){
                 if (occurrencies[d]>0) {
                     ofile  << d + coreness << " " << coreness << " " << occurrencies[d] << endl;
-                    cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile():         [" << d + coreness << " "
+                    if (debug)
+                        cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile():         [" << d + coreness << " "
                          << coreness << " " << occurrencies[d] << "] " << endl;
                 }
             }
 
         }
-        cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): done! " << endl;
+        if (debug)
+            cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): done! " << endl;
         ofile.close();
         return 0;
 
