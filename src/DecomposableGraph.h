@@ -9,7 +9,8 @@
 #include "AdjacencyList.h"
 #include <queue>
 #include <algorithm>
-
+#include <iostream>
+#include <ctime>
 
 class HeapNode{
 public:
@@ -97,8 +98,12 @@ public:
 
     int findDensestPrefix(bool debug);
 
-    void print_prefix(unsigned int p){
+    int writeCorenessDegreeFile(const string filename, const bool debug) const;
+
+    void print_prefix(unsigned int p=0){
         cout << "prefix:             ";
+        if (!p)
+            p=num_nodes;
         for (unsigned int n=1; n<=p; n++){
             cout << ordered_n[n]->ID << ", ";
         }
