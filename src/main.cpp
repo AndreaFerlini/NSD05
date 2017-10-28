@@ -26,7 +26,8 @@ int main() {
     MinHeap heap(loadedGraph.getNumNodes());
     heap.make_heap(loadedGraph.nodes+1);
     heap.print_container();
-
+    heap.flush_heap();
+    heap.print_container();
 
     //cout << "[EXECUTION] - main(): loading decomposable graph..." << endl;
     //DecomposableGraph decGraph(filename, debug);

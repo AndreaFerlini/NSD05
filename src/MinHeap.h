@@ -13,6 +13,7 @@ class MinHeap {
     private:
         HeapNode *container;
         unsigned int *idx_container;
+        unsigned int size;
         unsigned int max_size;
         //unsigned int size;
 
@@ -21,15 +22,18 @@ class MinHeap {
         explicit MinHeap(unsigned int _max_size);
         void swap(unsigned int _i, unsigned int _j);
         void bubble_up(unsigned int _id);
-        //TODO bubble down
+
         void bubble_down();
 
         void make_heap(Node *_nodes);
         void update(unsigned int _id);
 
-        //TODO pop min
         void pop_min();
         void print_container();
+
+        void flush_heap();
+
+        ~MinHeap();
 };
 
 
