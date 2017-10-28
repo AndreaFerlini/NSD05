@@ -7,60 +7,12 @@
 
 
 #include "AdjacencyList.h"
+#include "MinHeap.h"
+
 #include <queue>
 #include <algorithm>
 #include <iostream>
 #include <ctime>
-
-class HeapNode{
-public:
-    HeapNode() : g_node(nullptr), dec_degree(0) {}
-    HeapNode(Node* g_node);
-
-    unsigned int getID() const;
-
-    bool operator<(const HeapNode& rhs) const;
-    bool operator()(const HeapNode& lhs, const HeapNode& rhs);
-    friend ostream& operator<< (ostream& out, const HeapNode& obj);
-    friend bool operator== ( const HeapNode& lhs, const unsigned int &_ID);
-
-    Node* g_node;
-    unsigned int dec_degree;
-
-};
-
-class my_min_heap : public priority_queue<HeapNode, vector<HeapNode>, HeapNode >{
-public:
-
-    void remake(){
-        std::make_heap(this->c.begin(), this->c.end(), this->comp);
-    }
-
-    void update(const unsigned int ID){
-        auto it = find(this->c.begin(), this->c.end(), ID);
-        if (it != this->c.end()) {
-            //cout << "[my_min_heap::update] current it: " << *it << "->" << it->dec_degree-1<< endl;
-            it->dec_degree--;
-            return;
-        }
-        else {
-            cout << "[ERROR] - my_min_heap::update(): end of heap or node not found" <<  *it << endl;
-            return;
-        }
-    }
-
-    void clear_top(){
-        if (this->c.begin()!=this->c.end())
-            this->c.erase(this->c.begin());
-    }
-
-    void print(){
-        for (auto it=this->c.begin(); it!=this->c.end(); it++){
-            cout << *it << endl;
-        }
-        cout << endl;
-    }
-};
 
 class Subgraph {
 public:
@@ -88,7 +40,7 @@ public:
     void flushHeap(bool debug);
     int decomposeGraph(bool debug);
 
-    void update(int i){
+    /*void update(int i){
         minHeap.update(i);
     }
 
@@ -117,7 +69,7 @@ public:
         cout << "minHeap.remake();" << endl;
         minHeap.print();
     }
-
+    */
 
     int findDensestPrefix(bool debug);
 
@@ -136,7 +88,7 @@ public:
 private:
 
     bool decomposed;
-    my_min_heap minHeap;
+    MinHeap minHeap;
     unsigned int *c;
     Node **ordered_n;
 

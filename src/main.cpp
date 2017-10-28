@@ -1,12 +1,14 @@
 #include <iostream>
 #include <queue>
 
-#include "DecomposableGraph.h"
+//#include "DecomposableGraph.h"
 
+#include "MinHeap.h"
 int main() {
 
 
-    string filename = "../graphs/course5.graph";
+
+    string filename = "../graphs/sample.graph";
     bool debug = false;
 
     ifstream file(filename);
@@ -15,14 +17,29 @@ int main() {
         exit(0);
     }
 
-    cout << "[EXECUTION] - main(): loading decomposable graph..." << endl;
-    DecomposableGraph decGraph(filename, debug);
-    cout << "[EXECUTION] - main(): done! decomposing graph..." << endl;
+    AdjacencyList loadedGraph;
+
+    loadedGraph.loadFromFile(filename, false);
+
+    loadedGraph.print(false);
+
+    MinHeap heap(loadedGraph.getNumNodes());
+    heap.make_heap(loadedGraph.nodes+1);
+    heap.print_container();
+
+
+    //cout << "[EXECUTION] - main(): loading decomposable graph..." << endl;
+    //DecomposableGraph decGraph(filename, debug);
+    //cout << "[EXECUTION] - main(): done! decomposing graph..." << endl;
+
 
 //    decGraph.print(debug);
 //    decGraph.heapTest();
 //    decGraph.flushHeap(true);
 
+/*
+ *
+ *
 
     decGraph.decomposeGraph(debug);
 
@@ -36,7 +53,9 @@ int main() {
 
    cout << "[EXECUTION] - main(): done! writing file to plot..." << endl;
    decGraph.writeCorenessDegreeFile("../plots/sample.out", debug);
-
+ *
+ *
+ */
 
 
 

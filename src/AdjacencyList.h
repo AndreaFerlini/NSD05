@@ -13,6 +13,7 @@ using namespace std;
 
 class AdjacencyList{
 public:
+    Node* nodes;                        // array of the nodes in the greaph (ID, degree, pointer to the beginning of list of neighbours)
     /// DEFAULT CONSTRUCTOR
     AdjacencyList();
 
@@ -36,7 +37,7 @@ protected:
     unsigned int cumulative_degree;     // sum of all degree of the nodes (probabily edge x2). SIZE OF neighbour_list
     unsigned int num_edges;
     unsigned int num_nodes;
-    Node* nodes;                        // array of the nodes in the greaph (ID, degree, pointer to the beginning of list of neighbours)
+    //Node* nodes;                        // array of the nodes in the greaph (ID, degree, pointer to the beginning of list of neighbours)
     Node* getNeighbour(unsigned int node_id, unsigned int neighbour_number);
 
 private:
