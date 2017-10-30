@@ -83,7 +83,8 @@ void MinHeap::update(unsigned int _id) {
 HeapNode MinHeap::pop_min() {
     HeapNode root = container[0];
     idx_container[root.getID()] = -1;
-    container[0] = container[--size+1]; //update position of the root
+    container[0] = container[size]; //update position of the root
+    size --;
     //update idx_container with new position of root
     idx_container[container[0].getID()] = 0;
     bubble_down();
@@ -92,8 +93,9 @@ HeapNode MinHeap::pop_min() {
 }
 
 void MinHeap::print_container() {
-    cout << "[PRINT CONTAINER] size " << size << endl;
-    for (unsigned int i = 0; i < size+1; i ++){
+    unsigned int tmp_size = size +1;
+    cout << endl << "[PRINT CONTAINER] size " << tmp_size << endl;
+    for (unsigned int i = 0; i < tmp_size; i ++){
         cout << container[i].getID() << "-" << container[i].dec_degree << " ";
     }
     cout << endl;
@@ -102,11 +104,13 @@ void MinHeap::print_container() {
 //TODO do not remove all the nodes
 void MinHeap::flush_heap() {
     HeapNode min;
-    //cout << "[EXECTUION] ";
+    //unsigned int tmp_size = size + 1;
+    cout << "[EXECTUION] ";
+
     while (size != 0){
         print_container();
         min = pop_min();
-
+        cout << "SIZE " << size+1 << endl;
         //cout << " " << min.getID();
     }
 }
