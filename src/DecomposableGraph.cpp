@@ -4,8 +4,8 @@
 
 #include "DecomposableGraph.h"
 
-DecomposableGraph::DecomposableGraph(string filename, bool debug): AdjacencyList(filename, debug), densest_prefix(), decomposed(false) {
-    this->initHeap();
+DecomposableGraph::DecomposableGraph(string filename, bool debug): AdjacencyList(filename, debug), densest_prefix(), decomposed(false), minHeap(this->num_nodes) {
+    minHeap.make_heap(this->nodes+1);
     this->c = new unsigned int [this->num_nodes+1]();
     this->ordered_n = new Node*[this->num_nodes+1]();
     cout << "[SUCCESS] - DecomposableGraph(): graph loaded and heap successfully created" << endl;
@@ -19,27 +19,11 @@ DecomposableGraph::~DecomposableGraph() {
         delete [] ordered_n;
 };
 
-void DecomposableGraph::initHeap() {
-    // connect link all the nodes of the graph in the heap
-    for (unsigned int i = 1; i <= this->num_nodes; i++){
-        minHeap.push(HeapNode(this->nodes+i));
-    }
-}
-
-void DecomposableGraph::flushHeap(bool debug) {
-    while (!this->minHeap.empty()){
-        if (debug) cout << this->minHeap.top() << endl;
-        this->minHeap.pop();
-    }
-    cout << "[SUCCESS] - flushHeap(): the heap is empty" << endl;
-}
-
-
 int DecomposableGraph::decomposeGraph(bool debug) {
 
     float perc;
     unsigned resolution;
-    const unsigned start = time(NULL);
+    const int start = time(nullptr);
 
     unsigned int c;
     unsigned int prefix_counter;
@@ -57,15 +41,8 @@ int DecomposableGraph::decomposeGraph(bool debug) {
 
     c = 0;
     while (!minHeap.empty()){
-        // extract minimum remaining degree node in heap
-        v=minHeap.top();
-
-        // REMOVE v from heap but NOT remake yet!!!
-        minHeap.clear_top();
-/*
-        // REMOVE v
-        minHeap.pop();
-*/
+        // extract minimum remaining degree node in heap and remove node
+        v=minHeap.pop_min();
 
         // update the removed array
         removed[v.getID()] = true;
@@ -95,12 +72,10 @@ int DecomposableGraph::decomposeGraph(bool debug) {
             }
 
             if (!removed[n->ID]){       // if the n-th neighbur of v is not removed update it in the heap
-                minHeap.update(n->ID);      // update but NOT remake yet!!!
+                minHeap.update(n->ID);      // update
             }
         }
 
-        // finally remake!!!!!
-        minHeap.remake();
         if (debug)
             cout << "[DEBUG] - DecomposableGraph::decomposeGraph():  Node: " << v.getID()
                  << " c: " << this->c[v.getID()] << " prefix: " << prefix_counter << endl;
@@ -108,15 +83,20 @@ int DecomposableGraph::decomposeGraph(bool debug) {
         resolution = 1;
         perc = (float)100*prefix_counter/num_nodes;
         if (((int)(resolution*perc))%resolution==0) {
-            printf("%.4f%% - elapsed: %d heap_size: %d\n", perc, time(NULL)-start, minHeap.size());
+            printf("%.4f%% - elapsed: %d heap_size: %d\n", perc, time(NULL)-start, minHeap.getSize());
         }
 
         prefix_counter--;
     }
     cout << endl;
 
-
-    if (debug) cout << "[DecomposableGraph::decomposeGraph] minHeap top: " << minHeap.top() << endl;
+   if (debug){
+       cout << "[DEBUG] ordered_n: " << endl;
+       for (unsigned int i =0; i<num_nodes; i++){
+            cout  << ordered_n << ", ";
+        }
+        cout << endl;
+    }
 
     decomposed = true;
 

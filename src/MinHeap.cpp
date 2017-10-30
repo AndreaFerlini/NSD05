@@ -72,21 +72,21 @@ void MinHeap::update(unsigned int _id) {
     pos = idx_container[_id];
     if (pos != -1 && container[pos].dec_degree != 0){
         cout << "[TEST before] " << container[pos].dec_degree;
-        container[pos].dec_degree --;
+        container[pos].dec_degree--;
         cout << "[TEST after] " << container[pos].dec_degree << endl;
         bubble_up(pos);
     }
 }
 
 
-void MinHeap::pop_min() {
+HeapNode MinHeap::pop_min() {
     HeapNode root = container[0];
-    cout << root.getID();
     idx_container[root.getID()] = -1;
     container[0] = container[--size]; //update position of the root
     //update idx_container with new position of root
     idx_container[container[0].getID()] = 0;
     bubble_down();
+    return root;
 }
 
 void MinHeap::print_container() {
@@ -108,4 +108,17 @@ void MinHeap::flush_heap() {
 MinHeap::~MinHeap() {
     delete [] container;
     delete [] idx_container;
+}
+
+
+bool MinHeap::empty()const {
+    return size == 0;
+}
+
+unsigned int MinHeap::getSize() const {
+    return size;
+}
+
+HeapNode MinHeap::top() const {
+    return container[0];
 }

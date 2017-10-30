@@ -37,13 +37,13 @@ public:
 
     DecomposableGraph(string filename, bool debug);
     ~DecomposableGraph();
-    void flushHeap(bool debug);
     int decomposeGraph(bool debug);
 
-    /*void update(int i){
+    void update(int i){
         minHeap.update(i);
     }
 
+    /*
     void heapTest(){
         minHeap.print();
         update(1);
