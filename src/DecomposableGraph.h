@@ -84,6 +84,13 @@ public:
         }
     }
 
+    void print_minHeap(){
+        minHeap.flush_heap();
+    }
+    void print_minHeap_container(){
+        minHeap.print_container();
+    }
+
 
 private:
 

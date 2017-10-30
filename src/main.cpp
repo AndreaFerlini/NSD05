@@ -33,11 +33,14 @@ int main() {
     heap.print_container();
 */
 
+
     cout << "[EXECUTION] - main(): loading decomposable graph..." << endl;
     DecomposableGraph decGraph(filename, debug);
     cout << "[EXECUTION] - main(): done! decomposing graph..." << endl;
 
-
+    decGraph.print_minHeap_container();
+    decGraph.print_minHeap();
+/*
     decGraph.decomposeGraph(debug);
 
     cout << endl << "[EXECUTION] - main(): done! finding densest prefix..." << endl;
@@ -48,9 +51,9 @@ int main() {
 
     cout << endl;
 
-   cout << "[EXECUTION] - main(): done! writing file to plot..." << endl;
-   decGraph.writeCorenessDegreeFile("../plots/sample.out", debug);
-
+    cout << "[EXECUTION] - main(): done! writing file to plot..." << endl;
+    decGraph.writeCorenessDegreeFile("../plots/sample.out", debug);
+*/
 
 
 

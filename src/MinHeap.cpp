@@ -41,6 +41,7 @@ void MinHeap::bubble_up(unsigned int _index){
 void MinHeap::make_heap(Node *_nodes) {
     for (unsigned int i=0; i < max_size; i++){
         container[i] = HeapNode(_nodes+i);
+        cout << "[DEBUG] " << container[i].getID() << endl;
         idx_container[(_nodes+i)->ID] = i;
         size = i; // increase the size at every insert
         bubble_up(i);
@@ -53,8 +54,8 @@ void MinHeap::bubble_down() {
     unsigned int j1 = 1;
     unsigned int j2 = 2;
     unsigned int j;
-    while (j1 < size){
-        j=( (j2<size) && (container[j2].dec_degree < container[j1].dec_degree) ) ? j2 : j1 ;
+    while (j1 < size+1){
+        j=( (j2<size+1) && (container[j2].dec_degree < container[j1].dec_degree) ) ? j2 : j1 ;
         if (container[j].dec_degree < container[i].dec_degree) {
             swap(i,j);
             i=j;
@@ -82,26 +83,31 @@ void MinHeap::update(unsigned int _id) {
 HeapNode MinHeap::pop_min() {
     HeapNode root = container[0];
     idx_container[root.getID()] = -1;
-    container[0] = container[--size]; //update position of the root
+    container[0] = container[--size+1]; //update position of the root
     //update idx_container with new position of root
     idx_container[container[0].getID()] = 0;
     bubble_down();
+    //cout << root.getID();
     return root;
 }
 
 void MinHeap::print_container() {
-    for (unsigned int i = 0; i < size; i ++){
-        cout << "[EXECUTION] " << container[i].getID() << endl;
+    cout << "[PRINT CONTAINER] size " << size << endl;
+    for (unsigned int i = 0; i < size+1; i ++){
+        cout << container[i].getID() << "-" << container[i].dec_degree << " ";
     }
     cout << endl;
 }
 
 //TODO do not remove all the nodes
 void MinHeap::flush_heap() {
-    cout << "[EXECTUION] ";
+    HeapNode min;
+    //cout << "[EXECTUION] ";
     while (size != 0){
-        pop_min();
-        cout << " ";
+        print_container();
+        min = pop_min();
+
+        //cout << " " << min.getID();
     }
 }
 
