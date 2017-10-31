@@ -1,21 +1,22 @@
 //
-// Created by Andrea Ferlini on 27/10/2017.
+// Created by Andrea Ferlini on 31/10/2017.
 //
 
-#include "MinHeap.h"
+#include "MinHeapDouble.h"
 
-MinHeap::MinHeap(unsigned int _max_size){
+MinHeapDouble::MinHeapDouble(unsigned int _max_size){
     max_size = _max_size;
     size = 0;
-    container = new HeapNode[max_size];
+    container = new HeapNodeDouble[max_size];
     idx_container = new unsigned int[max_size];
+
 }
 
-void MinHeap::swap(unsigned int _i, unsigned int _j) {
-    HeapNode i_copy;
+void MinHeapDouble::swap(unsigned int _i, unsigned int _j) {
+    HeapNodeDouble i_copy;
     unsigned int i_idx_copy;
     unsigned int i_id,
-                j_id;
+            j_id;
 
 
     i_copy = container[_i];
@@ -31,7 +32,7 @@ void MinHeap::swap(unsigned int _i, unsigned int _j) {
     container[_j] = i_copy;
 }
 
-void MinHeap::bubble_up(unsigned int _index){
+void MinHeapDouble::bubble_up(unsigned int _index){
     unsigned int j = (_index-1)/2;
     while (_index > 0){
         if (container[j].value > container[_index].value){
@@ -44,9 +45,9 @@ void MinHeap::bubble_up(unsigned int _index){
     }
 }
 
-void MinHeap::make_heap(Node *_nodes) {
+void MinHeapDouble::make_heap(Node *_nodes, double *_score) {
     for (unsigned int i=0; i < max_size; i++){
-        container[i] = HeapNode(_nodes[i]);
+        container[i] = HeapNodeDouble(_nodes[i], _score[i]);
         //cout << "[DEBUG] " << container[i].n_ID << endl;
         idx_container[(_nodes+i)->ID] = i;
         size = i; // increase the size at every insert
@@ -56,7 +57,7 @@ void MinHeap::make_heap(Node *_nodes) {
 }
 
 
-void MinHeap::bubble_down() {
+void MinHeapDouble::bubble_down() {
     unsigned int i = 0;
     unsigned int j1 = 1;
     unsigned int j2 = 2;
@@ -74,7 +75,7 @@ void MinHeap::bubble_down() {
     }
 }
 
-void MinHeap::update(unsigned int _id) {
+void MinHeapDouble::update(unsigned int _id) {
     //argument is node id
     unsigned int pos;
     pos = idx_container[_id];
@@ -87,7 +88,7 @@ void MinHeap::update(unsigned int _id) {
 }
 
 
-void MinHeap::pop_min() { //TODO FIX
+void MinHeapDouble::pop_min() { //TODO FIX
     if (empty()){
         //cout << "[ERROR] - MinHeap::pop_min(): heap empty, impossible to pop! Aborting..." << endl;
         return;
@@ -100,7 +101,7 @@ void MinHeap::pop_min() { //TODO FIX
     //cout << "[DEBUG] - MinHeap::pop_min(): final size=" << size << endl;
 }
 
-void MinHeap::print_container() {
+void MinHeapDouble::print_container() {
     cout << endl << "heap size: " << size << endl;
     for (unsigned int i = 0; i < size; i++){
         cout << "ID: " << container[i].n_ID << " d:" << container[i].value << endl;
@@ -108,8 +109,8 @@ void MinHeap::print_container() {
 }
 
 //TODO do not remove all the nodes
-void MinHeap::flush_heap() {
-    HeapNode min;
+void MinHeapDouble::flush_heap() {
+    HeapNodeDouble min;
 
     while (!empty()){
         //print_container();
@@ -119,21 +120,21 @@ void MinHeap::flush_heap() {
     }
 }
 
-MinHeap::~MinHeap() {
+MinHeapDouble::~MinHeapDouble() {
     delete [] container;
     delete [] idx_container;
 }
 
 
-bool MinHeap::empty()const {
+bool MinHeapDouble::empty()const {
     return size == 0;
 }
 
-unsigned int MinHeap::getSize() const {
+unsigned int MinHeapDouble::getSize() const {
     return size;
 }
 
 
-HeapNode MinHeap::top() const {
+HeapNodeDouble MinHeapDouble::top() const {
     return container[0];
 }

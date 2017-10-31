@@ -8,6 +8,9 @@ DecomposableGraph::DecomposableGraph(string filename, bool debug): AdjacencyList
     minHeap.make_heap(this->nodes+1);
     this->c = new unsigned int [this->num_nodes+1]();
     this->ordered_n = new Node*[this->num_nodes+1]();
+
+    this->score = new double [this->num_nodes+1]();
+
     cout << "[SUCCESS] - DecomposableGraph(): graph loaded and heap successfully created" << endl;
 
 }
@@ -15,6 +18,10 @@ DecomposableGraph::DecomposableGraph(string filename, bool debug): AdjacencyList
 DecomposableGraph::~DecomposableGraph() {
     if (c!= nullptr)
         delete [] c;
+
+    if (score!= nullptr)
+        delete [] score;
+
     if (ordered_n!= nullptr)
         delete [] ordered_n;
 };
@@ -28,7 +35,7 @@ int DecomposableGraph::decomposeGraph(bool debug) {
     unsigned int c;  // core value
     unsigned int prefix_counter;
     Node* v;   // min node in heap
-    unsigned int d;  // dec_degree of v
+    unsigned int d;  // value of v
     bool* removed = nullptr;
 
     //init array to track the removed nodes
@@ -44,7 +51,7 @@ int DecomposableGraph::decomposeGraph(bool debug) {
     while (!minHeap.empty()){
         // extract minimum remaining degree node in heap and remove node
         v= nodes + minHeap.top().n_ID;
-        d= minHeap.top().dec_degree;
+        d= minHeap.top().value;
         minHeap.pop_min();
         // update the removed array
         removed[v->ID] = true;
@@ -249,6 +256,53 @@ int DecomposableGraph::writeCorenessDegreeFile(const string filename, const bool
         return -1;
     }
 
+}
+
+void DecomposableGraph::mkscore(int iterations) {
+    for (unsigned int t = 0; t<iterations; t++ ){
+        // loop on nodes
+        for (unsigned int node = 1; node < this->num_nodes+1; node ++){
+            // loop on neigh of selected node
+            for (unsigned int j=0; j < this->nodes[node].degree; j++){
+                unsigned int neigh =  this->getNeighbour(node, j)->ID;
+                // graph is not directed, consider every edge once
+                if (node < neigh){
+                    score[node] <= score[neigh] ? score[node]++ : score[neigh]++;
+                }
+            }
+        }
+    }
+    cout << "[TEST] " << endl;
+    for (unsigned int k=1; k < this->num_nodes+1; k++){
+        score[k] /= (double) iterations;
+        cout << score[k] << endl;
+    }
+}
+
+
+MinHeapDouble DecomposableGraph::heapSort() {
+    MinHeapDouble minHeapDouble(this->num_nodes);
+    minHeapDouble.make_heap(this->nodes, this->score);
+
+    for (unsigned int h = minHeapDouble.getSize() - 1; h > 0; --h) {
+        minHeapDouble.swap(h, 0);
+        minHeapDouble.bubble_down();
+    }
+    return minHeapDouble;
+}
+
+void DecomposableGraph::findDensityFriendlyDensestPrefix(bool debug){
+
+    mkscore(100);
+
+    MinHeapDouble minHeapDouble = heapSort();
+
+    for (unsigned int i = 0; i<minHeapDouble.getSize(); i++){
+        this->ordered_n[i] = nodes+minHeapDouble.container[i].n_ID;
+    }
+
+    findDensestPrefix(debug);
+    densest_prefix.print();
 }
 
 

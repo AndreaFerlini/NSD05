@@ -8,7 +8,8 @@ int main() {
 
 
 
-    string filename = "../graphs/com-youtube.ungraph.graph";
+    //string filename = "../graphs/com-youtube.ungraph.graph";
+    string filename = "../graphs/sample.graph";
     bool debug = false;
 
     ifstream file(filename);
@@ -52,7 +53,7 @@ int main() {
 
     //decGraph.heapTest();
 
-
+/*  ES 2
     decGraph.decomposeGraph(debug);
 
 
@@ -73,9 +74,13 @@ int main() {
 
     cout << "[EXECUTION] - main(): done! writing file to plot..." << endl;
     decGraph.writeCorenessDegreeFile("../plots/sample.out", debug);
+*/
 
+/*
+ * ES 3
+ * */
 
-
+    decGraph.findDensityFriendlyDensestPrefix(false);
 
 /*
     cout << endl << endl << "Size of Node: " << sizeof(Node);

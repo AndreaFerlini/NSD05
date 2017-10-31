@@ -8,6 +8,7 @@
 
 #include "AdjacencyList.h"
 #include "MinHeap.h"
+#include "MinHeapDouble.h"
 
 #include <queue>
 #include <algorithm>
@@ -36,7 +37,9 @@ public:
     Subgraph densest_prefix;
 
     DecomposableGraph(string filename, bool debug);
+
     ~DecomposableGraph();
+
     int decomposeGraph(bool debug);
 
     void update(int i){
@@ -88,12 +91,20 @@ public:
         minHeap.print_container();
     }
 
+    void mkscore(int iterations);
+
+    MinHeapDouble heapSort();
+
+    void findDensityFriendlyDensestPrefix(bool debug);
+
+
 
 private:
 
     bool decomposed;
     MinHeap minHeap;
     unsigned int *c;
+    double *score;
     Node **ordered_n;
 
     void initHeap();

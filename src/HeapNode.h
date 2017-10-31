@@ -9,7 +9,7 @@
 
 class HeapNode{
 public:
-    HeapNode() : n_ID(0), dec_degree(0) {}
+    HeapNode() : n_ID(0), value(0) {}
     HeapNode(const Node& _node);
 
     bool operator<(const HeapNode& rhs) const;
@@ -18,7 +18,7 @@ public:
     friend bool operator== ( const HeapNode& lhs, const unsigned int &_ID);
 
     unsigned int n_ID;
-    unsigned int dec_degree;
+    unsigned int value;
 
 };
 
