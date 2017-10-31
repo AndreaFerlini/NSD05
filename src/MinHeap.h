@@ -30,7 +30,7 @@ public:
     void make_heap(Node *_nodes);
     void update(unsigned int _id);
 
-    HeapNode pop_min();
+    void pop_min();
     void print_container();
 
     void flush_heap();

@@ -25,9 +25,10 @@ int DecomposableGraph::decomposeGraph(bool debug) {
     unsigned resolution;
     const int start = time(nullptr);
 
-    unsigned int c;
+    unsigned int c;  // core value
     unsigned int prefix_counter;
-    HeapNode v;
+    Node* v;   // min node in heap
+    unsigned int d;  // dec_degree of v
     bool* removed = nullptr;
 
     //init array to track the removed nodes
@@ -42,45 +43,47 @@ int DecomposableGraph::decomposeGraph(bool debug) {
     c = 0;
     while (!minHeap.empty()){
         // extract minimum remaining degree node in heap and remove node
-        v=minHeap.pop_min();
-
+        v= nodes + minHeap.top().n_ID;
+        d= minHeap.top().dec_degree;
+        minHeap.pop_min();
         // update the removed array
-        removed[v.getID()] = true;
+        removed[v->ID] = true;
 
 
         // update c value in the corresponding node in adjList
-        if ( v.dec_degree > c) {
-            c = v.dec_degree;
+        if ( d > c) {
+            c = d;
         }
 
-        this->c[v.getID()] = c;
-        this->ordered_n[prefix_counter] = v.g_node;
+        this->c[v->ID] = c;
+
+        this->ordered_n[prefix_counter] = v;
 
         // REMOVE EDGES OF v
         //update the degrees of the other nodes
             //loop on the nodes, check if v is in nodes[i]'s neigh list
             //if so, decrease its degree value in the heap
-        for (unsigned int i = 0; i<v.g_node->degree; i++){
-            Node* n = this->getNeighbour(v.getID(), i);
+        for (unsigned int i = 0; i<v->degree; i++){
+            unsigned int neigh = getNeighbour(v->ID, i)->ID;
             if (debug)
-                cout << "[DEBUG] - DecomposableGraph::decomposeGraph(): neighbour #" << i << " of " << v.getID()
-                 << " is " << *n << " removed:" << removed[n->ID] << endl;
+                cout << "[DEBUG] - DecomposableGraph::decomposeGraph(): neighbour #" << i << " of " << v->ID
+                 << " is " << *getNeighbour(v->ID, i) << " removed:" << removed[neigh] << endl;
 
-            if (n== nullptr){
+            if (neigh<1){
                 cout << "[ERROR] - DecomposableGraph::decomposeGraph(): neighbour not found... Aborting...";
                 return -1;
             }
 
-            if (!removed[n->ID]){       // if the n-th neighbur of v is not removed update it in the heap
-                minHeap.update(n->ID);      // update
+            if (!removed[neigh]){       // if the n-th neighbur of v is not removed update it in the heap
+                minHeap.update(neigh);      // update
             }
         }
 
         if (debug)
-            cout << "[DEBUG] - DecomposableGraph::decomposeGraph():  Node: " << v.getID()
-                 << " c: " << this->c[v.getID()] << " prefix: " << prefix_counter << endl;
+            cout << "[DEBUG] - DecomposableGraph::decomposeGraph():  removed ID: " << v->ID
+                 << " with c: " << this->c[v->ID] << ". Remaining heap size: " << minHeap.getSize() << endl;
 
-        resolution = 1;
+        resolution = 10000;
         perc = (float)100*prefix_counter/num_nodes;
         if (((int)(resolution*perc))%resolution==0) {
             printf("%.4f%% - elapsed: %d heap_size: %d\n", perc, time(NULL)-start, minHeap.getSize());
@@ -90,15 +93,15 @@ int DecomposableGraph::decomposeGraph(bool debug) {
     }
     cout << endl;
 
-   if (debug){
-       cout << "[DEBUG] ordered_n: " << endl;
-       for (unsigned int i =0; i<num_nodes; i++){
-            cout  << ordered_n << ", ";
+    if (debug){
+        cout << "[DEBUG] ordered_n: " << endl;
+        for (unsigned int i =1; i<=num_nodes; i++){
+            cout  << ordered_n[i]->ID << ", ";
         }
         cout << endl;
     }
 
-    decomposed = true;
+    this->decomposed = true;
 
     return 0;
 
@@ -219,7 +222,7 @@ int DecomposableGraph::writeCorenessDegreeFile(const string filename, const bool
                 if (++p<=num_nodes){
                     temp_c = c[ordered_n[p]->ID];
                 } else {
-                    temp_c = 0;
+                    break;
                 }
 
             }
@@ -246,4 +249,9 @@ int DecomposableGraph::writeCorenessDegreeFile(const string filename, const bool
         return -1;
     }
 
+}
+
+
+bool DecomposableGraph::isDecomposed() const {
+    return decomposed;
 }

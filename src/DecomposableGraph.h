@@ -43,19 +43,18 @@ public:
         minHeap.update(i);
     }
 
-    /*
+    bool isDecomposed()const;
+
+
     void heapTest(){
-        minHeap.print();
+        minHeap.print_container();
         update(1);
-        minHeap.clear_top();
-        minHeap.clear_top();
+        minHeap.pop_min();
+        minHeap.pop_min();
         cout << "update(1);" << endl;
-        cout << "minHeap.clear_top();" << endl;
-        cout << "minHeap.clear_top();" << endl;
-        minHeap.print();
-        minHeap.remake();
-        cout << "minHeap.remake();" << endl;
-        minHeap.print();
+        cout << "minHeap.pop_min();" << endl;
+        cout << "minHeap.pop_min();" << endl;
+        minHeap.print_container();
         update(3);
         update(3);
         update(2);
@@ -64,12 +63,9 @@ public:
         cout << "update(3);" << endl;
         cout << "update(2);" << endl;
         cout << "update(6);" << endl;
-        minHeap.print();
-        minHeap.remake();
-        cout << "minHeap.remake();" << endl;
-        minHeap.print();
+        minHeap.print_container();
     }
-    */
+
 
     int findDensestPrefix(bool debug);
 
@@ -84,9 +80,10 @@ public:
         }
     }
 
-    void print_minHeap(){
+    void flush_minHeap(){
         minHeap.flush_heap();
     }
+
     void print_minHeap_container(){
         minHeap.print_container();
     }

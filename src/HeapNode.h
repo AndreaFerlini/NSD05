@@ -9,17 +9,15 @@
 
 class HeapNode{
 public:
-    HeapNode() : g_node(nullptr), dec_degree(0) {}
-    HeapNode(Node* g_node);
-
-    unsigned int getID() const;
+    HeapNode() : n_ID(0), dec_degree(0) {}
+    HeapNode(const Node& _node);
 
     bool operator<(const HeapNode& rhs) const;
     bool operator()(const HeapNode& lhs, const HeapNode& rhs);
     friend ostream& operator<< (ostream& out, const HeapNode& obj);
     friend bool operator== ( const HeapNode& lhs, const unsigned int &_ID);
 
-    Node* g_node;
+    unsigned int n_ID;
     unsigned int dec_degree;
 
 };
