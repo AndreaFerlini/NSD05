@@ -1,0 +1,101 @@
+
+_______________________________________________________________
+YOUTUBE
+_______________________________________________________________
+
+3    [EXECUTION] - main(): done! finding densest prefix...
+3    [EXECUTION] - main(): done! output:
+
+avg degree density: 45.5858
+edge density:       0.0486249
+size:               1876
+
+3    [EXECUTION] - main(): find densest prefix using mkscore
+20    [EXECUTION] - main(): done! output:
+
+avg degree density: 45.5172
+edge density:       0.0390538
+size:               2332
+
+***************************************************************
+
+_______________________________________________________________
+ORKUT
+_______________________________________________________________
+
+97s: [EXECUTION] - main(): done! finding densest prefix...
+109s: [EXECUTION] - main(): done! output:
+  avg degree density: 227.873
+  edge density:       0.0175828
+  size:               25921
+
+111s: [EXECUTION] - main(): find densest prefix using mkscore
+1309s: [EXECUTION] - main(): done! output:
+  avg degree density: 227.789
+  edge density:       0.0165852
+  size:               27470
+
+
+_______________________________________________________________
+LIVE JOURNAL
+_______________________________________________________________
+
+### Changed node with ID 0 to 4036538
+
+26s: [EXECUTION] - main(): done! finding densest prefix...
+30s: [EXECUTION] - main(): done! output:
+  avg degree density: 190.984
+  edge density:       0.992127
+  size:               386
+
+30s: [EXECUTION] - main(): find densest prefix using mkscore
+301s: [EXECUTION] - main(): done! output:
+  avg degree density: 193.202
+  edge density:       0.380318
+  size:               1017
+
+
+_______________________________________________________________
+SCHOLAR
+_______________________________________________________________
+
+### Changed node with ID 0 to 287425
+
+1s: [EXECUTION] - main(): done! finding densest prefix...
+1s: [EXECUTION] - main(): done! output:
+  avg degree density: 9.71429
+  edge density:       0.719577
+  size:               28
+
+
+DENSEST SUBGRAPH: (degree close to the core value)
+from same institute, co-autors
+
+28	14	55807	Sa-kwang	Song		Principal Researcher at Korea Institute of Science and Technology Information, Associate Professor
+23	14	55809	Sung-Pil	Choi		Associate Professor, Kyonggi University
+26	14	55813	Chang-Hoo	Jeong		JeongKorea Institute of Science and Technology Information
+24	14	55815	Yun-soo		Choi		ChoiSenior Researcher of KISTI
+21	14	55816	Hong-Woo	Chun		ChunKorea Institute of Science and Technology Information
+22	14	71188	Jinhyung	Kim			Korea Institute of Science and Technology Information
+31	14	123670	Hanmin		Jung		Korea Institute of Science and Technology Information (KISTI)
+22	14	123671	Do-Heon		Jeong		Women's University
+26	14	123672	Myunggwon	Hwang		Korea Institute of Science and Technology Information
+20	14	123673	Won-Kyung	Sung		KISTI
+19	14	123675	Hwamook		Yoon		Korea Institute of Science and Technology Information
+22	14	123676	Minho		Lee	        Senior Researcher, Korea Institute of Science and Technology Information (KISTI)
+21	14	123677	Won-Goo		Lee 		KISTI
+17	14	123678	Jung		Ho Um		Korea Institute of Science and Technology Information
+26	14	123680	Dongmin		Seo			Korea Institute of Science and Technology Information
+18	14	123681	Mi-Nyeong	Hwang		Korea Institute of Science and Technology Information
+21	14	123682	Sung		J.	Jung	Korea Institute of Science and Technology
+24	14	123688	Minhee		Cho			Korea Institute of Science and Technology Information
+26	14	123689	Sungho		Shin		Senior Researcher at KISTI / Ph.D. Student at KAIST
+29	14	123694	Seungwoo	Lee			Principal Researcher of Korea Institute of Science and Technology Information
+15	14	123695	Heekwan		Koo		
+16	14	123696	Jinhee		Lee			Student Researcher, Korea Institute of Science and Technology Information
+24	14	123697	Taehong		Kim			Korea Institute of Science and Technology Information
+18	14	192697	Mikyoung	Lee			Korea Institute of Science and Technology Information (KISTI)
+17	14	192698	Ha-neul		Yeom		Software Developer at NAVER Corp.
+17	14	192699	Seungkyun	Hong		PhD Student, UST-KISTI Campus
+17	14	192700	Yun-ji		Jang	
+14	12	123684	hoon		Choi 		Professor of Chemistry, Korea University

@@ -1,0 +1,6 @@
+DENSEST SUBGRAPH DEFINITION
+In practical5 specification:
+	Meaning a subgraph with the highest AVERAGE Degree Density among the subgraphs induced on the p first nodesof a core ordering for any p
+In slides (2-approximation)
+	Subgraph with the highest Degree Density among the subgraphs induced on the p first nodesof a core ordering for any p
+
