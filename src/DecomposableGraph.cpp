@@ -8,7 +8,6 @@ DecomposableGraph::DecomposableGraph(string filename, bool debug): AdjacencyList
     minHeap.make_heap(this->nodes+1);
     this->c = new unsigned int [this->num_nodes+1]();
     this->ordered_n = new Node*[this->num_nodes+1]();
-
     this->score = new double [this->num_nodes+1]();
 
     cout << "[SUCCESS] - DecomposableGraph(): graph loaded and heap successfully created" << endl;
@@ -77,7 +76,7 @@ int DecomposableGraph::decomposeGraph(bool debug) {
                  << " is " << *getNeighbour(v->ID, i) << " removed:" << removed[neigh] << endl;
 
             if (neigh<1){
-                cout << "[ERROR] - DecomposableGraph::decomposeGraph(): neighbour not found... Aborting...";
+                cout << "[ERROR] - DecomposableGraph::decomposeGraph(): neighbour #" << i << " of " << v->ID << " not found... Aborting...";
                 return -1;
             }
 
@@ -90,10 +89,10 @@ int DecomposableGraph::decomposeGraph(bool debug) {
             cout << "[DEBUG] - DecomposableGraph::decomposeGraph():  removed ID: " << v->ID
                  << " with c: " << this->c[v->ID] << ". Remaining heap size: " << minHeap.getSize() << endl;
 
-        resolution = 10000;
+        resolution = num_nodes/100;
         perc = (float)100*prefix_counter/num_nodes;
         if (((int)(resolution*perc))%resolution==0) {
-            printf("%.4f%% - elapsed: %d heap_size: %d\n", perc, time(NULL)-start, minHeap.getSize());
+            printf("%.1f%% - elapsed: %d heap_size: %d\n", perc, (int)time(NULL)-start, minHeap.getSize());
         }
 
         prefix_counter--;
@@ -128,6 +127,8 @@ int DecomposableGraph::findDensestPrefix(bool debug) {
 
     bool *left_nodes;
     left_nodes = new bool [num_nodes+1]();
+
+    densest_prefix.reset();
 
     m_h = 0;
     left_nodes[ordered_n[1]->ID] = true;
@@ -175,12 +176,18 @@ int DecomposableGraph::findDensestPrefix(bool debug) {
 }
 
 int DecomposableGraph::writeCorenessDegreeFile(const string filename, const bool debug) const {
+
+    float perc;
+    unsigned resolution;
+    const int start = time(nullptr);
+
     fstream ofile;
     unsigned int coreness;
     unsigned int p;     // scan the ordered array
     unsigned int* occurrencies = nullptr;
     unsigned int occ_size;
     unsigned int temp_c;
+
     if (debug)
         cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): opening file..." << endl;
     ofile.open(filename, ios::out);
@@ -203,6 +210,8 @@ int DecomposableGraph::writeCorenessDegreeFile(const string filename, const bool
             if (debug)
                 cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): parsing " << coreness << "-core..." << endl;
 
+
+            // count occurrencies with same coreness and degree
             while (temp_c == coreness ){
                 if (debug)
                     cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): node: " << ordered_n[p]->ID
@@ -232,6 +241,14 @@ int DecomposableGraph::writeCorenessDegreeFile(const string filename, const bool
                     break;
                 }
 
+                resolution = num_nodes/100;
+                perc = (float)100*p/num_nodes;
+                if (((int)(resolution*perc))%resolution==0) {
+                    printf("%.1f%% - elapsed: %d\n", perc, (int)time(NULL)-start);
+                }
+
+
+
             }
             if (debug)
                 cout << "[DEBUG] - DecomposableGraph::writeCorenessDegreeFile(): writing [d c o], occ_size: " << occ_size << endl;
@@ -258,25 +275,39 @@ int DecomposableGraph::writeCorenessDegreeFile(const string filename, const bool
 
 }
 
-void DecomposableGraph::mkscore(int iterations) {
+void DecomposableGraph::mkscore(int iterations, bool debug) {
+    float perc;
+    unsigned resolution;
+    const int start = time(nullptr);
+
     for (unsigned int t = 0; t<iterations; t++ ){
         // loop on nodes
-        for (unsigned int node = 1; node < this->num_nodes+1; node ++){
+        for (unsigned int node = 1; node <=num_nodes; node ++){
             // loop on neigh of selected node
-            for (unsigned int j=0; j < this->nodes[node].degree; j++){
-                unsigned int neigh =  this->getNeighbour(node, j)->ID;
+            for (unsigned int j=0; j < nodes[node].degree; j++){
+                unsigned int neigh = getNeighbour(node, j)->ID;
                 // graph is not directed, consider every edge once
                 if (node < neigh){
                     score[node] <= score[neigh] ? score[node]++ : score[neigh]++;
                 }
             }
         }
+        resolution = 1;
+        perc = (float)100*t/iterations;
+        if (((int)(resolution*perc))%resolution==0) {
+            printf("%.1f%% - elapsed: %d\n", perc, (int)time(NULL)-start);
+        }
     }
-    cout << "[TEST] " << endl;
+
+    if (debug)
+        cout << "[TEST] " << endl;
+
     for (unsigned int k=1; k < this->num_nodes+1; k++){
         score[k] /= (double) iterations;
-        cout << score[k] << endl;
+        if (debug)
+            cout << score[k] << endl;
     }
+
 }
 
 
@@ -293,19 +324,66 @@ MinHeapDouble DecomposableGraph::heapSort() {
 
 void DecomposableGraph::findDensityFriendlyDensestPrefix(bool debug){
 
-    mkscore(100);
+    mkscore(100, debug);
 
-    MinHeapDouble minHeapDouble = heapSort();
+    MinHeapDouble scoreMinHeap(num_nodes);
+    scoreMinHeap.make_heap(nodes+1, score+1);
 
-    for (unsigned int i = 0; i<minHeapDouble.getSize(); i++){
-        this->ordered_n[i] = nodes+minHeapDouble.container[i].n_ID;
+    unsigned int n = num_nodes;
+    while (!scoreMinHeap.empty()){
+        ordered_n[n] = nodes + scoreMinHeap.top().n_ID;
+        if (debug)
+            cout << "[DEBUG] - DecomposableGraph::findDensityFriendlyDensestPrefix(): ID:" << ordered_n[n]->ID
+                 << " score:" << scoreMinHeap.top().value << " heap size:" << scoreMinHeap.getSize() << endl;
+        scoreMinHeap.pop_min();
+        n--;
     }
 
     findDensestPrefix(debug);
-    densest_prefix.print();
 }
 
 
 bool DecomposableGraph::isDecomposed() const {
     return decomposed;
+}
+
+int DecomposableGraph::writeAllInFile(const string filename, const bool debug) {
+
+    float perc;
+    unsigned resolution;
+    const int start = time(nullptr);
+
+
+    fstream ofile;
+
+    if (debug)
+        cout << "[DEBUG] - DecomposableGraph::writeAllInFile(): opening file..." << endl;
+    ofile.open(filename, ios::out);
+
+    if (ofile.is_open()){
+        if (debug)
+            cout << "[DEBUG] - DecomposableGraph::writeAllInFile(): Succeed, writing... " << endl;
+
+            for (unsigned int n=1; n<=num_nodes; n++){
+                ofile << nodes[n].ID << " " << nodes[n].degree << " " << c[n] << " " << score[n] << endl;
+
+                resolution = num_nodes/100;
+                perc = (float)100*n/num_nodes;
+                if (((int)(resolution*perc))%resolution==0) {
+                    printf("%.1f%% - elapsed: %d\n", perc, (int)time(NULL)-start);
+                }
+
+            }
+
+
+        if (debug)
+            cout << "[DEBUG] - DecomposableGraph::writeAllInFile(): done! " << endl;
+        ofile.close();
+        return 0;
+
+    } else {
+        cout << "[ERROR] - DecomposableGraph::writeAllInFile(): cannot open the file: " << filename << endl;
+        return -1;
+    }
+
 }

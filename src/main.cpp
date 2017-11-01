@@ -7,23 +7,47 @@
 int main() {
 
 
+    int start = (int)time(nullptr);
+
 
     //string filename = "../graphs/com-youtube.ungraph.graph";
-    string filename = "../graphs/sample.graph";
+    string filename = "../graphs/scholar.net.graph",
+            outputfilename = "../plots/scholar.net.out",
+            rankfilename = "../plots/scholar.net.rnk";
+
     bool debug = false;
 
     ifstream file(filename);
     if (!file.good()) {
-        cout << "[ERROR] - main(): No such file ... " << endl;
+        cout << time(nullptr)-start << "s: " <<  "[ERROR] - main(): No such file ... " << endl;
         exit(0);
     }
 
-
-/*
+    /// LOAD ADJLIST, MEASURE FILE
+    /*
+    cout << time(nullptr)-start << "    create AdjList... "  << endl;
     AdjacencyList loadedGraph;
 
+    cout << time(nullptr)-start << "    load from file... "  << endl;
     loadedGraph.loadFromFile(filename, false);
 
+    cout << time(nullptr)-start << "    done!"  << endl;
+    cout << "nodes: " << loadedGraph.getNumNodes() << endl
+         << "edges: " << loadedGraph.getNumEdges() << endl;
+*/
+
+    /// LOAD DECOMPOSABLE GRAPH
+
+    cout << time(nullptr)-start << "s: " << "[EXECUTION] - main(): loading decomposable graph..." << endl;
+    DecomposableGraph decGraph(filename, debug);
+    //decGraph.print(debug);
+    cout << time(nullptr)-start << "s: " << "[EXECUTION] - main(): done! decomposing graph..." << endl;
+
+
+
+
+    /// MINHEAP TESTS
+    /*
     loadedGraph.print(false);
 
 
@@ -33,13 +57,6 @@ int main() {
     heap.flush_heap();
     heap.print_container();
 */
-
-
-    cout << "[EXECUTION] - main(): loading decomposable graph..." << endl;
-    DecomposableGraph decGraph(filename, debug);
-    cout << "[EXECUTION] - main(): done! decomposing graph..." << endl;
-
-
 /*
     cout << "[EXECTUION] - main(): printing heap container..." << endl;
     decGraph.print_minHeap_container();
@@ -49,44 +66,55 @@ int main() {
 
 
     decGraph.print_minHeap_container();
-*/
+
+
 
     //decGraph.heapTest();
 
-/*  ES 2
+*/
+
+
+
+
+
+    ///  ES 2
+
     decGraph.decomposeGraph(debug);
 
 
     if (decGraph.isDecomposed()){
-        cout << endl << "[EXECUTION] - main(): done! finding densest prefix..." << endl;
+        cout << endl << time(nullptr)-start << "s: " << "[EXECUTION] - main(): done! finding densest prefix..." << endl;
     } else {
-        cout << endl << "[ERROR] - main(): Not decomposed. Aborting..." << endl;
+        cout << endl << time(nullptr)-start << "s: " << "[ERROR] - main(): Not decomposed. Aborting..." << endl;
         return -1;
     }
 
 
     decGraph.findDensestPrefix(debug);
-    cout << "[EXECUTION] - main(): done! output:" << endl;
+    cout <<  time(nullptr)-start << "s: " << "[EXECUTION] - main(): done! output:" << endl;
     decGraph.densest_prefix.print();
-    decGraph.print_prefix(decGraph.densest_prefix.size);
+    //decGraph.print_prefix(decGraph.densest_prefix.size);
 
     cout << endl;
 
-    cout << "[EXECUTION] - main(): done! writing file to plot..." << endl;
-    decGraph.writeCorenessDegreeFile("../plots/sample.out", debug);
-*/
+    cout << time(nullptr)-start << "s: " << "[EXECUTION] - main(): done! writing file to plot..." << endl;
+    decGraph.writeCorenessDegreeFile(outputfilename, debug);
+    cout << time(nullptr)-start << "s: " << "[EXECUTION] - main(): successfully written!" << endl;
 
+    cout << time(nullptr)-start << "s: " << "[EXECUTION] - main(): writing nodes ranking in file: " << rankfilename << endl;
+    decGraph.writeAllInFile(rankfilename, true);
+    cout << time(nullptr)-start << "s: " << "[EXECUTION] - main(): successfully written!" << endl;
+
+
+
+
+    /// ES 3
 /*
- * ES 3
- * */
-
-    decGraph.findDensityFriendlyDensestPrefix(false);
-
-/*
-    cout << endl << endl << "Size of Node: " << sizeof(Node);
-    cout << endl << "Size of Node*: " << sizeof(Node*);
-    cout << endl << "Size of unsigned int: " << sizeof(unsigned int);
-    cout << endl << "Size of float: " << sizeof(float);
+    cout << time(nullptr)-start << "s: " << "[EXECUTION] - main(): find densest prefix using mkscore" << endl;
+    decGraph.findDensityFriendlyDensestPrefix(debug);
+    cout << time(nullptr)-start << "s: " << "[EXECUTION] - main(): done! output:" << endl;
+    decGraph.densest_prefix.print();
+    //decGraph.print_prefix(decGraph.densest_prefix.size);
 */
 
     return 0;

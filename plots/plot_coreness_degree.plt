@@ -33,7 +33,7 @@ set format cb "10^{%L}";
 #set label "7e-10" at 70e-9
 
 set key bmargin center horizontal nobox
-set style line 1 pt 7 ps 5 # filled circle
+set style line 1 pt 13 ps 3 # filled circle
 
 set grid y
 set grid x
@@ -41,5 +41,5 @@ set grid x
 set xlabel "Degree"
 set ylabel "Coreness"
 set cblabel "# of nodes"
-set output "plot.png"
-plot 'sample.out' using 1:2:3 notitle with points ls 1 palette
+set output "scholar.net.png"
+plot 'scholar.net.out' using 1:2:3 notitle with points ls 1 palette

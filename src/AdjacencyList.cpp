@@ -113,7 +113,7 @@ unsigned int AdjacencyList::getNumNodes() {
     return this->num_nodes;
 }
 unsigned int AdjacencyList::getNumEdges() {
-    return this->num_nodes;
+    return this->num_edges;
 }
 
 void AdjacencyList::print(bool debug) {

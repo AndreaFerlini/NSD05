@@ -21,10 +21,15 @@ public:
     Subgraph(): avg_deg_dens(), edge_density(), size() {};
 
     void print(){
-        cout << endl;
-        cout << "avg degree density: " << this->avg_deg_dens<< endl
-             << "edge density:       " << this->edge_density << endl
-             << "size:               " << this->size << endl;
+        cout << "  avg degree density: " << this->avg_deg_dens<< endl
+             << "  edge density:       " << this->edge_density << endl
+             << "  size:               " << this->size << endl;
+    }
+
+    void reset(){
+        avg_deg_dens = 0;
+        edge_density = 0;
+        size = 0;
     }
 
     float avg_deg_dens;
@@ -91,12 +96,13 @@ public:
         minHeap.print_container();
     }
 
-    void mkscore(int iterations);
+    void mkscore(int iterations, bool debug);
 
     MinHeapDouble heapSort();
 
     void findDensityFriendlyDensestPrefix(bool debug);
 
+    int writeAllInFile(const string filename, const bool debug);
 
 
 private:
