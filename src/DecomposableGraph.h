@@ -17,21 +17,14 @@
 
 class Subgraph {
 public:
-
+    ///--- CONSTRUCTORS ---
     Subgraph(): avg_deg_dens(), edge_density(), size() {};
 
-    void print(){
-        cout << "  avg degree density: " << this->avg_deg_dens<< endl
-             << "  edge density:       " << this->edge_density << endl
-             << "  size:               " << this->size << endl;
-    }
+    ///--- METHODS ---
+    void print();   // print characteristics
+    void reset();   // re initialize the arguments
 
-    void reset(){
-        avg_deg_dens = 0;
-        edge_density = 0;
-        size = 0;
-    }
-
+    ///--- arguments ---
     float avg_deg_dens;
     float edge_density;
     unsigned int size;
@@ -39,81 +32,38 @@ public:
 
 class DecomposableGraph : public AdjacencyList {
 public:
-    Subgraph densest_prefix;
-
+    ///--- CONSTRUCTORS ---
     DecomposableGraph(string filename, bool debug);
-
     ~DecomposableGraph();
 
-    int decomposeGraph(bool debug);
+    ///--- METHODS ---
+    int decomposeGraph(bool debug);     // decompose the graph and compute coreness (save in coreness array, order nodes in ordered_n)
+    bool isDecomposed()const;           // check if it as been decomposed (if coreness array has been filled)
+    int findDensestPrefix(bool debug);  // calculate densest prefix using coreness value ad rank
+    int writeCorenessDegreeFile(const string filename, const bool debug) const;  // (to plot) write a file with: <degree> <coreness> <number of nodes with these characteristics>
+    void print_prefix(unsigned int p=0);  // print the elements contained in the prefix of size p
+    void findDensestPrefixWithMKscore(bool debug);  // find densest prefix ordering the nodes according to their MK score (fill score array and orders nodes in ordered_n)
+    int writeAllInFile(const string filename, const bool debug); // write all nodes with: <ID> <degree> <coreness> <mkscore>
+    void mkscore(int iterations, bool debug); // calculate the mkscore of each nodes using 'iterations' number of iterations
 
-    void update(int i){
-        minHeap.update(i);
-    }
+    // oprartions on minHeap
+    void update(int i); // decrease (by 1) the degree value of node with ID=i
+    void heapTest();
+    void flush_minHeap();   // (debug) flush the content of minHeap and print in cout
+    void print_minHeap_container();  // (debug) print the container of minHeap without popping
 
-    bool isDecomposed()const;
-
-
-    void heapTest(){
-        minHeap.print_container();
-        update(1);
-        minHeap.pop_min();
-        minHeap.pop_min();
-        cout << "update(1);" << endl;
-        cout << "minHeap.pop_min();" << endl;
-        cout << "minHeap.pop_min();" << endl;
-        minHeap.print_container();
-        update(3);
-        update(3);
-        update(2);
-        update(6);
-        cout << "update(3);" << endl;
-        cout << "update(3);" << endl;
-        cout << "update(2);" << endl;
-        cout << "update(6);" << endl;
-        minHeap.print_container();
-    }
+    // MinHeapDouble heapSort();  // sort the container of minheapdouble
 
 
-    int findDensestPrefix(bool debug);
-
-    int writeCorenessDegreeFile(const string filename, const bool debug) const;
-
-    void print_prefix(unsigned int p=0){
-        cout << "prefix:             ";
-        if (!p)
-            p=num_nodes;
-        for (unsigned int n=1; n<=p; n++){
-            cout << ordered_n[n]->ID << ", ";
-        }
-    }
-
-    void flush_minHeap(){
-        minHeap.flush_heap();
-    }
-
-    void print_minHeap_container(){
-        minHeap.print_container();
-    }
-
-    void mkscore(int iterations, bool debug);
-
-    MinHeapDouble heapSort();
-
-    void findDensityFriendlyDensestPrefix(bool debug);
-
-    int writeAllInFile(const string filename, const bool debug);
-
+    ///--- arguments ---
+    Subgraph densest_prefix;
 
 private:
-
-    bool decomposed;
-    MinHeap minHeap;
-    unsigned int *c;
-    double *score;
-    Node **ordered_n;
-
-    void initHeap();
+    bool decomposed;    // track the state of the graph
+    MinHeap minHeap;    // used to decompose the graph in an efficient way (to be able to retrieve min wit O(1))
+    unsigned int *c;    // to store the value of coreness for each node
+    double *score;      // to store the value of mkscore for each node
+    Node **ordered_n;   // to order nodes according to any criteria in order to find densest prefix
 
 };
 

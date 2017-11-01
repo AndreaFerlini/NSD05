@@ -11,9 +11,9 @@ using namespace std;
 
 class Node{
 public:
-    unsigned int ID;
-    unsigned int degree;
-    unsigned int first_neigh_pos;
+    unsigned int ID;                // the node ID
+    unsigned int degree;            // the degree of the node
+    unsigned int first_neigh_pos;   // where in the neighbour list we can find the neighbours
 
     Node();
 

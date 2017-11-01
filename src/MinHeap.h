@@ -10,14 +10,6 @@
 #include "HeapNode.h"
 
 class MinHeap {
-private:
-    HeapNode *container;
-    unsigned int *idx_container;
-    unsigned int size;
-    unsigned int max_size;
-    //unsigned int size;
-
-
 public:
     explicit MinHeap(unsigned int _max_size);
     void swap(unsigned int _i, unsigned int _j);
@@ -36,6 +28,14 @@ public:
     void flush_heap();
 
     ~MinHeap();
+
+private:
+    HeapNode *container;
+    unsigned int *idx_container;
+    unsigned int size;
+    unsigned int max_size;
+    //unsigned int size;
+
 };
 
 

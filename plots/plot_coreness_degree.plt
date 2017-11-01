@@ -24,16 +24,16 @@ set palette defined ( 0 "#000090",\
 #set ytics 1
 
 set format x "10^{%L}";
-set format y "10^{%L}";
+#set format y "10^{%L}";
 set format cb "10^{%L}";
 
-#set xrange [50e-9:10e-3]
+set yrange [1:20]
 #set yrange [50e-9:10e-3]
 
-#set label "7e-10" at 70e-9
+set ytics ("1" 1, "10" 10, "20" 20)
 
 set key bmargin center horizontal nobox
-set style line 1 pt 13 ps 3 # filled circle
+set style line 1 pt 7 ps 2 # filled circle
 
 set grid y
 set grid x

@@ -17,6 +17,7 @@ public:
     friend ostream& operator<< (ostream& out, const HeapNodeDouble& obj);
     friend bool operator== ( const HeapNodeDouble& lhs, const unsigned int &_ID);
 
+    ///--- arguments ---
     unsigned int n_ID;
     double value;
 

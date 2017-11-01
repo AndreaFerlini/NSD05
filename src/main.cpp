@@ -11,9 +11,9 @@ int main() {
 
 
     //string filename = "../graphs/com-youtube.ungraph.graph";
-    string filename = "../graphs/scholar.net.graph",
-            outputfilename = "../plots/scholar.net.out",
-            rankfilename = "../plots/scholar.net.rnk";
+    string filename = "../graphs/course5.graph",
+            outputfilename = "../plots/course5.out",
+            rankfilename = "../plots/course5.rnk";
 
     bool debug = false;
 
@@ -111,7 +111,7 @@ int main() {
     /// ES 3
 /*
     cout << time(nullptr)-start << "s: " << "[EXECUTION] - main(): find densest prefix using mkscore" << endl;
-    decGraph.findDensityFriendlyDensestPrefix(debug);
+    decGraph.findDensestPrefixWithMKscore(debug);
     cout << time(nullptr)-start << "s: " << "[EXECUTION] - main(): done! output:" << endl;
     decGraph.densest_prefix.print();
     //decGraph.print_prefix(decGraph.densest_prefix.size);
